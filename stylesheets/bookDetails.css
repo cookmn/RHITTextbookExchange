@@ -1,0 +1,25 @@
+.book {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 15pt;
+    display: block;
+}
+
+.book p {
+    display: inline-block;
+    margin: 0px;
+}
+
+#book-image {
+    float: left;
+    width: 30%;
+    padding: 20px;
+    overflow: hidden;
+
+}
+
+#book-text {
+    text-align: left;
+    float: right;
+    width: 65%;
+    padding-top: 20px;
+}

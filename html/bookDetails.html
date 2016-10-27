@@ -7,14 +7,16 @@
 <body>
 	<div id="main-div">
         <div id="book-info">
-            <span id="book-image"></span>
-            <span id="title"></span>
-            <span id="author"></span>
-            <span id="isbn"></span>
-            <span id="condition"></span>
-            <span id="subject"></span>
-            <span id="price"></span>
-            <span id="fav-button"></span>
+            <div id="book-image" class="book"></div>
+            <div id="book-text">
+                <div id="title" class="book"></div>
+                <span id="author" class="book"></span>
+                <span id="isbn" class="book"></span>
+                <span id="condition" class="book"></span>
+                <span id="subject" class="book"></span>
+                <span id="price" class="book"></span>
+                <span id="fav-button" class="book"></span>
+            </div>
         </div>
         <div id="seller-info">
             <span id="seller-name"></span>
@@ -25,5 +27,7 @@
             <span id="seller-comments"></span>
         </div>
 	</div>
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="../js/bookDetails.js"></script>
 </body>
 </html>
