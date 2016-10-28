@@ -7,11 +7,17 @@
 .book p {
     display: inline-block;
     margin: 0px;
+    padding: 5px;
+}
+
+#book-info {
+    height: 290px;
 }
 
 #book-image {
     float: left;
-    width: 30%;
+    width: 250px;
+    height: 250px;
     padding: 20px;
     overflow: hidden;
 
@@ -19,7 +25,6 @@
 
 #book-text {
     text-align: left;
-    float: right;
-    width: 65%;
+    margin-left: 290px;
     padding-top: 20px;
 }
