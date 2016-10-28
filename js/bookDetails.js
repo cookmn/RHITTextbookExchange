@@ -38,8 +38,20 @@ function loadSellerInfo() {
     var date = document.getElementById("date");
     var sellerComments = document.getElementById("seller-comments");
 
-    var divider = sellerDiv.appendChild(document.createElement('hr'));
-    
+    var sellerNameText = sellerName.appendChild(document.createElement('p'));
+    sellerNameText.textContent = "Seller: John Doe";
+    var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
+    sellerRatingText.textContent = "Rating : 95%";
+    var emailText = email.appendChild(document.createElement('p'));
+    emailText.textContent = "Send John and email!";
+
+    var followersText = followers.appendChild(document.createElement('p'));
+    followersText.textContent = "Current post followers: 6";
+    var dateText = date.appendChild(document.createElement('p'));
+    dateText.textContent = "Originally posted on: 10/20/2016";
+
+    var commentsText = sellerComments.appendChild(document.createElement('p'));
+    commentsText.textContent = "Seller Comments: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi odio tortor, tempor sed turpis vel, facilisis pellentesque nulla. Cras dapibus ligula eros, quis dictum purus semper finibus. Nulla non ligula sed elit aliquam sollicitudin aliquam a                                  nibh. Nam eget ante ut lacus commodo congue et sed lacus. Integer fermentum tristique lacinia. Ut vulputate posuere lorem, a consectetur mi eleifend lacinia. Suspendisse est urna, luctus rutrum lorem et, semper semper dui.";
 }
 
 function setup() {

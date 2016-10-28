@@ -1,4 +1,8 @@
-.book {
+#main-div {
+    padding: 15px;
+}
+
+.book, .seller {
     font-family: "Trebuchet MS", Helvetica, sans-serif;
 	font-size: 15pt;
     display: block;
@@ -20,11 +24,25 @@
     height: 250px;
     padding: 20px;
     overflow: hidden;
-
 }
 
 #book-text {
     text-align: left;
-    margin-left: 290px;
+    margin-left: 320px;
     padding-top: 20px;
+}
+
+#left-col {
+    float: left;
+    width: 50%;
+}
+
+#right-col {
+    float: right;
+    width: 50%;
+    text-align: left;
+}
+
+#bottom {
+    clear: both;
 }
