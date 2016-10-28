@@ -67,9 +67,6 @@ function setup() {
     var favButton = document.getElementById("fav-button");
 }
 
-
-
-
 $(window).on('load', function () {
     //load in initial state
     setup();

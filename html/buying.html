@@ -1,1 +1,32 @@
-<p>This is the buying page</p>
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+	<title>Book buying pages</title>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/buying.css">
+</head>
+<body>
+	<div id="main-div">
+        <div id="sort-by">
+			<span><p>Sort By: </p></span>
+			<select name="subjects">
+				<option selected hidden>Subject</option>
+				<option value="math">Math</option>
+				<option value="physics">Physics</option>
+				<option value="biology">Biology</option>
+				<option value="chemistry">Chemistry</option>
+			</select>
+
+			<select name="price">
+				<option selected hidden>Price</option>
+				<option value="low">Low to High</option>
+				<option value="high">High to Low</option>
+			</select>
+				<input type="text" name="isbn" value="ISBN">
+			<form>
+			</form>
+        </div>
+	</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="../js/buying.js"></script>
+</body>
+</html>
