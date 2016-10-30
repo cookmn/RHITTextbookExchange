@@ -1,0 +1,16 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+build/
+
+!.gitkeep
+tmp
+.DS_Store
+.idea
+properties.js
+database.json
