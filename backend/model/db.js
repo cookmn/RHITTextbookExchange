@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 // Will be used to define a function to accept 
 // message and callback function
 var gracefulShutdown;
-var dbURI = 'mongodb://localhost/contactsappdb';
+var dbURI = 'mongodb://localhost/textbookexchangedb';
 mongoose.connect(dbURI);
 
 // Emulating disconnection events on Windows
@@ -66,4 +66,8 @@ process.on('SIGTERM', function() {
 
 // BRING IN YOUR SCHEMAS & MODELS
 // Use plural form of name
-require('./contacts');
+require('./buyOrders');
+require('./sellOrders');
+require('./textbooks');
+require('./transactions');
+require('./users');
