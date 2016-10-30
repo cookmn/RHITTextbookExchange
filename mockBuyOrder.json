@@ -1,0 +1,9 @@
+{
+    "buyer": 1,
+    "textbook": 2,
+    "datePosted": "2016010-26T00:00:00.0000",
+    "description": "This textbook is awesome",
+    "price": 3,
+    "condition": "Great",
+    "favoritedCount": 4
+}
