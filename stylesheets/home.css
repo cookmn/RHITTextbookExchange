@@ -1,0 +1,108 @@
+/*this is for the home page*/
+/*
+html {
+	height: 100%;
+}
+*/
+body {
+	/*height: 100%;*/
+	margin-top: 2%;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+	border: 1px solid #C1C7C9;
+}
+
+#navbar {
+}
+
+#main-div {
+	/*height: 1000px;*/
+}
+
+#buy-div {
+	display: inline-block;
+	float: left;
+	width: 50%;
+	text-align: center;
+	height: 100%;
+	min-height: 1000px;
+	padding-top: 2%;
+	/*margin-top: 5%;*/
+	/*padding-left: 15%;*/
+}
+
+#sell-div {
+	border-left: solid #001111;
+	display: inline-block;
+	float: right;
+	height: 100%;
+	min-height: 1000px;
+	width: 49%;
+	text-align: center;
+	padding-top: 2%;
+}
+
+.search-div {
+	width: 50%;
+}
+
+.search-div div {
+	margin: 5px 5px 5px 5px;
+	/*height: */
+}
+
+.search-div div div:nth-child(0) {
+	/*height: 1px;*/
+	display: inline;
+	float: left;
+}
+
+.search-div div div:nth-child(1) {
+	/*height: 1px;*/
+	display: inline;
+	float: right;
+}
+
+.search-div div div p {
+	margin-top: 2px; 
+}
+
+.search-div div div img {
+	float: left;
+	width: 70%;
+	height: 70%;
+}
+
+ol.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    padding-left: 15px;
+	border-collapse: collapse;
+    background-color: #f8f8f8;
+    border: 1px solid #C1C7C9;
+}
+
+ol.nav li {
+    float: left;
+    display: inline;
+    border-right: 1px solid #C1C7C9;
+}
+
+ol.nav li a {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: black;
+}
+ol.nav li a:hover {
+    background-color: #dcdcdc;  
+}
+
+ol.nav li a:visited {
+    background-color: #dcdcdc;
+}
