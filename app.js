@@ -8,9 +8,12 @@ var cors = require('cors');
 
 var db = require('./model/db');
 
- var routes = require('./routes/index');
- var books = require('./routes/books');
- var users = require('./routes/users');
+var routes = require('./routes/index');
+var books = require('./routes/books');
+var users = require('./routes/users');
+var sellOrders = require('./routes/sellOrders');
+var buyOrders = require('./routes/buyOrders');
+var transactions = require('./routes/transactions');
 
 var app = express();
 app.use(cors());
@@ -32,6 +35,9 @@ app.use(express.static(path.join(__dirname, 'public'), {
  app.use('/', routes);
  app.use('/books', books);
  app.use('/users', users);
+ app.use('/transactions', transactions);
+ app.use('/sellOrders', sellOrders);
+ app.use('/buyOrders', buyOrders);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
