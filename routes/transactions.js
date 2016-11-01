@@ -16,39 +16,32 @@ router.use(methodOverride(function (req, res) {     // in case we're working wit
 
 router.route('/')
   .get(function (req, res, next) {
-    mongoose.model('User').find({}, function (err, users) {
+    mongoose.model('Transaction').find({}, function (err, transactions) {
       if (err) {
         console.log(err);
       } else {
         res.format({
           json: function () {
-            res.json(users); 
+            res.json(transactions); 
           }
         });
       }
     });
   })
   .post(function (req, res) {
-    mongoose.model('User').create({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        profilePicture: req.body.profilePicture,
-        rating: req.body.rating,
-        emailAddress: req.body.emailAddress,
-        favoritedBuyOrders: req.body.favoritedBuyOrders,
-        favoritedSellOrders: req.body.favoritedSellOrders,
-        year: req.body.year,
-        major: req.body.major,
-        buyHistory: req.body.buyHistory,   //buy order ids
-        sellHistory: req.body.sellHistory
-    }, function (err, user) {
+    mongoose.model('Transaction').create({
+        isBuy: req.body.isBuy,
+        orderID: req.body.orderID,
+        customerID: req.body.customerID,
+        priceOfTransaction: req.body.priceOfTransaction
+    }, function (err, transaction) {
       if (err) {
-        res.send('problem adding user to the db');
+        res.send('problem adding transaction to the db');
         console.log(err);
       } else {
         res.format({
           json: function () {
-            res.json(user);
+            res.json(transaction);
           }
         });
       }
@@ -57,8 +50,8 @@ router.route('/')
     
 // route middleware to validata :id
 router.param('id', function (req, res, next, id) {
-    mongoose.model('User').findById(id, function (err, user) {
-        if (err || user === null) {
+    mongoose.model('Transaction').findById(id, function (err, transaction) {
+        if (err || transaction === null) {
             res.status(404);
             err = new Error('Not Found');
             err.status = 404;
@@ -81,10 +74,10 @@ router.param('id', function (req, res, next, id) {
 // CHALLENGE:  Implement these API endpoints before next class
 router.route('/:id')
     .get(function(req, res) {
-        mongoose.model('User').findById(req.params.id, function (err, user) {    
+        mongoose.model('Transaction').findById(req.params.id, function (err, transaction) {    
             if (err) {
                 res.status(404);
-                err = new Error('Problem getting user');
+                err = new Error('Problem getting transaction');
                 err.status = 404;
                 res.format({
                     json: function() {
@@ -94,31 +87,23 @@ router.route('/:id')
             } else {            
                 res.format({
                     json: function () {
-                        res.json(user);
+                        res.json(transaction);
                     }
                 });
             }
         })
     })
     .put(function(req, res) {
-        mongoose.model('User').findById(req.params.id, function (err, user) {
+        mongoose.model('Transaction').findById(req.params.id, function (err, transaction) {
+            transaction.isBuy = req.body.isBuy || transaction.isBuy;
+            transaction.orderID = req.body.orderID || transaction.orderID;
+            transaction.customerID = req.body.customerID || transaction.customerID;
+            transaction.priceOfTransaction = req.body.priceOfTransaction || transaction.priceOfTransaction;
 
-            user.firstName = req.body.firstName || user.firstName;
-            user.lastName = req.body.lastName || user.lastName;
-            user.profilePicture = req.body.profilePicture || user.profilePicture;
-            user.rating = req.body.rating || user.rating;
-            user.emailAddress = req.body.emailAddress || user.emailAddress;
-            user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
-            user.favoritedSellOrders = req.body.favoritedSellOrders || user.favoritedSellOrders;
-            user.year = req.body.year || user.year;
-            user.major = req.body.major || user.major;
-            user.buyHistory = req.body.buyHistory || user.buyHistory;
-            user.sellHistory = req.body.sellHistory || user.sellHistory;
-
-            user.save(function (err, person) {
+            transaction.save(function (err, trans) {
                 if (err) {
                     res.status(404);
-                    err = new Error('Problem updating user');
+                    err = new Error('Problem updating transaction');
                     err.status = 404;
                     res.format({
                         json: function() {
@@ -128,7 +113,7 @@ router.route('/:id')
                 } else {
                     res.format({
                         json: function() {
-                            res.json(person);
+                            res.json(trans);
                         }
                     });
                 }
@@ -136,12 +121,12 @@ router.route('/:id')
         });
     })
     .delete(function(req, res) {
-        mongoose.model('User').findByIdAndRemove(req.params.id)
+        mongoose.model('Transaction').findByIdAndRemove(req.params.id)
             .exec(
                 function (err, user) {
                     if (err) {
                         res.status(404);
-                        err = new Error('Problem deleting user');
+                        err = new Error('Problem deleting transaction');
                         err.status = 404;
                         res.format({
                             json: function() {
