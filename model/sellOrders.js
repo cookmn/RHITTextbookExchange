@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var sellOrderSchema  = new mongoose.Schema({
-    seller: Number,
-    textbook: Number,
+    seller: String,
+    textbook: String,
     datePosted: Date,
     description: String,
     price: Number,
