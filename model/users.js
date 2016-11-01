@@ -9,7 +9,7 @@ var userSchema  = new mongoose.Schema({
     favoritedSellOrders: [Number],
     year: Number,
     major: String,
-    buyHistory: [Number],
+    buyHistory: [Number],   //buy order ids
     sellHistory: [Number]
 });
 

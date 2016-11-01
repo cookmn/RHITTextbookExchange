@@ -16,43 +16,49 @@ router.use(methodOverride(function (req, res) {     // in case we're working wit
 
 router.route('/')
   .get(function (req, res, next) {
-    mongoose.model('Textbook').find({}, function (err, books) {
+    mongoose.model('User').find({}, function (err, users) {
       if (err) {
         console.log(err);
       } else {
         res.format({
           json: function () {
-            res.json(books); 
+            res.json(users); 
           }
         });
       }
     });
   })
   .post(function (req, res) {
-    mongoose.model('Textbook').create({
-      title: req.body.title,
-      authors: req.body.authors,
-      ISBN: req.body.ISBN,
-      class: req.body.class,
-      imagePath: req.body.class
-    }, function (err, book) {
+    mongoose.model('User').create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        profilePicture: req.body.profilePicture,
+        rating: req.body.rating,
+        emailAddress: req.body.emailAddress,
+        favoritedBuyOrders: req.body.favoritedBuyOrders,
+        favoritedSellOrders: req.body.favoritedSellOrders,
+        year: req.body.year,
+        major: req.body.major,
+        buyHistory: req.body.buyHistory,   //buy order ids
+        sellHistory: req.body.sellHistory
+    }, function (err, user) {
       if (err) {
-        res.send('problem adding book to the db');
+        res.send('problem adding user to the db');
         console.log(err);
       } else {
         res.format({
           json: function () {
-            res.json(book);
+            res.json(user);
           }
         });
       }
     });
   });
-
+    
 // route middleware to validata :id
 router.param('id', function (req, res, next, id) {
-    mongoose.model('Textbook').findById(id, function (err, book) {
-        if (err || book === null) {
+    mongoose.model('User').findById(id, function (err, user) {
+        if (err || user === null) {
             res.status(404);
             err = new Error('Not Found');
             err.status = 404;
@@ -75,10 +81,10 @@ router.param('id', function (req, res, next, id) {
 // CHALLENGE:  Implement these API endpoints before next class
 router.route('/:id')
     .get(function(req, res) {
-        mongoose.model('Textbook').findById(req.params.id, function (err, book) {    
+        mongoose.model('User').findById(req.params.id, function (err, user) {    
             if (err) {
                 res.status(404);
-                err = new Error('Problem getting book');
+                err = new Error('Problem getting user');
                 err.status = 404;
                 res.format({
                     json: function() {
@@ -88,24 +94,31 @@ router.route('/:id')
             } else {            
                 res.format({
                     json: function () {
-                        res.json(book);
+                        res.json(user);
                     }
                 });
             }
         })
     })
     .put(function(req, res) {
-        mongoose.model('Textbook').findById(req.params.id, function (err, book) {
-            book.title = req.body.title || book.title;
-            book.authors = req.body.authors || book.authors;
-            book.ISBN = req.body.ISBN || book.ISBN;
-            book.class = req.body.class || book.class;
-            book.imagePath = req.body.class || book.imagePath;
+        mongoose.model('User').findById(req.params.id, function (err, user) {
 
-            book.save(function (err, textbook) {
+            user.firstName = req.body.firstName || user.firstName;
+            user.lastName = req.body.lastName || user.lastName;
+            user.profilePicture = req.body.profilePicture || user.profilePicture;
+            user.rating = req.body.rating || user.rating;
+            user.emailAddress = req.body.emailAddress || user.emailAddress;
+            user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
+            user.favoritedSellOrders = req.body.favoritedSellOrders || user.favoritedSellOrders;
+            user.year = req.body.year || user.year;
+            user.major = req.body.major || user.major;
+            user.buyHistory = req.body.buyHistory || user.buyHistory;
+            user.sellHistory = req.body.sellHistory || user.sellHistory;
+
+            contact.save(function (err, person) {
                 if (err) {
                     res.status(404);
-                    err = new Error('Problem updating book');
+                    err = new Error('Problem updating user');
                     err.status = 404;
                     res.format({
                         json: function() {
@@ -115,7 +128,7 @@ router.route('/:id')
                 } else {
                     res.format({
                         json: function() {
-                            res.json(textbook);
+                            res.json(person);
                         }
                     });
                 }
@@ -123,12 +136,12 @@ router.route('/:id')
         });
     })
     .delete(function(req, res) {
-        mongoose.model('Textbook').findByIdAndRemove(req.params.id)
+        mongoose.model('User').findByIdAndRemove(req.params.id)
             .exec(
-                function (err, book) {
+                function (err, user) {
                     if (err) {
                         res.status(404);
-                        err = new Error('Problem deleting book');
+                        err = new Error('Problem deleting user');
                         err.status = 404;
                         res.format({
                             json: function() {
@@ -146,6 +159,5 @@ router.route('/:id')
                 }
             );
     });
-
 
 module.exports = router; 
