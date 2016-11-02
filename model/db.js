@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 // Will be used to define a function to accept 
 // message and callback function
 var gracefulShutdown;
-var dbURI = 'mongodb://localhost/textbookexchangedb';
+var dbURI = 'mongodb://teamUser:rhittextbookexchange@ds139567.mlab.com:39567/rhittextbookexchangedb';
 mongoose.connect(dbURI);
 
 // Emulating disconnection events on Windows
