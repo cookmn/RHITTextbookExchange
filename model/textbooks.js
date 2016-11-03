@@ -4,6 +4,7 @@ var textbookSchema  = new mongoose.Schema({
     authors: [String],
     ISBN: String,
     class: String,
+    subject: String,
     imagePath: String
 });
 

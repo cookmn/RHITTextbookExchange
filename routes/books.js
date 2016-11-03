@@ -34,6 +34,7 @@ router.route('/')
       authors: req.body.authors,
       ISBN: req.body.ISBN,
       class: req.body.class,
+      subject: req.body.subject,
       imagePath: req.body.class
     }, function (err, book) {
       if (err) {
@@ -100,6 +101,7 @@ router.route('/:id')
             book.authors = req.body.authors || book.authors;
             book.ISBN = req.body.ISBN || book.ISBN;
             book.class = req.body.class || book.class;
+            book.subject = req.body.subject || book.subject;
             book.imagePath = req.body.class || book.imagePath;
 
             book.save(function (err, textbook) {
