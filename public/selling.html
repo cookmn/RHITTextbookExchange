@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+	<title>Book selling pages</title>
+	<link rel="stylesheet" type="text/css" href="css/buying.css">
+	<link rel="stylesheet" type="text/css" href="./css/navbar.css">
+	<script type="text/javascript" src="js/navbar-factory.js"></script>
+</head>
+<body>
+    <div id="navbar"></div>
+	<div id="main-div">
+        <div id="sort-by">
+			<span><p id="sort-title">Sort By: </p></span>
+			<select name="subjects" class="sort" id="sort-subject">
+				<option selected hidden>Subject</option>
+				<option value="Math">Math</option>
+				<option value="Physics">Physics</option>
+				<option value="Biology">Biology</option>
+				<option value="Chemistry">Chemistry</option>
+			</select>
+
+			<select name="price" class="sort" id="sort-price">
+				<option selected hidden>Price</option>
+				<option value="low">Low to High</option>
+				<option value="high">High to Low</option>
+			</select>
+			<input type="text" class="sort" name="isbn" id="sort-isbn" placeholder="ISBN">
+        </div>
+		<div id="book-list">
+			
+		</div>
+	</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/selling.js"></script>
+</body>
+</html>

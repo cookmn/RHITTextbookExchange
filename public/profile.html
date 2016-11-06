@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>profile page</title>
+	<script type="text/javascript" src="./js/navbar-factory.js"></script>
+	<link rel="stylesheet" type="text/css" href="./css/profile.css">
+	<link rel="stylesheet" type="text/css" href="./css/navbar.css">
+
+</head>
+
+<body>
+	<div>
+		<div id="navbar"></div>
+		<div id="main-div">
+			<div id="info">
+            <div id="profile-image" class="book"></div>
+				<button id="editProfile" onclick="editProfile()"></button>
+				<div id="book-text" class="profileInfo">
+					<div id="name" class="book"></div>
+					<div id="year" class="book"></div>
+					<div id="major" class="book"></div>
+					<div id="sold" class="book"></div>
+					<div id="bought" class="book"></div>
+				</div>
+			</div>
+			<div id="books">
+				<div id="selling" class="bookdivs"></div>
+				<div id="buying" class="bookdivs"></div>
+			</div>
+		</div>
+	</div>
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<span class="close">x</span>
+			<table class="modalTable">
+				<tr>
+					<td id="firstName" class="title">First Name:</td>
+					<td id="firstNameInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="lastName" class="title">Last Name:</td>
+					<td id="lastNameInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="image" class="title">Image:</td>
+					<td id="imageInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="year" class="title">Year:</td>
+					<td id="yearInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="major" class="title">Major:</td>
+					<td id="majorInput" class="textArea"></td>
+				</tr>
+			</table>
+			<button id="submit" class="modalButton" onclick="submit()">Submit</button>
+		</div>
+	</div>
+
+	<div id="ratingModal" class="modal">
+		<div class="modal-content">
+			<span class="close">x</span>
+			<table class="modalTable">
+				<tr>
+					<td id="rating" class="title">Rating:</td>
+					<td id="ratingInput" class="textArea"></td>
+				</tr>
+			</table>
+			<button id="submit" class="modalButton" onclick="closeRatingModal()">Submit</button>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/profile.js"></script>
+</body>
+
+</html>

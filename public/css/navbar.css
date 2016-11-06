@@ -1,0 +1,42 @@
+#navbar {
+    min-width: 850px;
+}
+
+ol.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    padding-left: 15px;
+	border-collapse: collapse;
+    background-color: #f8f8f8;
+    border: 1px solid #C1C7C9;
+}
+
+ol.nav li {
+    float: left;
+    display: inline;
+    border-right: 1px solid #C1C7C9;
+}
+
+ol.nav li#rightli {
+    float: right;
+    border-right: none;
+    border-left: 1px solid #C1C7C9;
+}
+
+ol.nav li a {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: black;
+}
+ol.nav li a:hover {
+    background-color: #dcdcdc;  
+}
+
+ol.nav li a:visited {
+    background-color: #dcdcdc;
+}
