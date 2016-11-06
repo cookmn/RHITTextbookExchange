@@ -34,8 +34,8 @@ router.route('/')
       authors: req.body.authors,
       ISBN: req.body.ISBN,
       class: req.body.class,
-      imagePath: req.body.class,
-      subject: req.body.subject
+      subject: req.body.subject,
+      imagePath: req.body.class
     }, function (err, book) {
       if (err) {
         res.send('problem adding book to the db');
