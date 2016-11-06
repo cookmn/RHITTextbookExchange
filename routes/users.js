@@ -32,7 +32,7 @@ router.route('/')
     mongoose.model('User').create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        profilePicture: req.body.profilePicture,
+        image: req.body.image,
         rating: req.body.rating,
         emailAddress: req.body.emailAddress,
         favoritedBuyOrders: req.body.favoritedBuyOrders,
@@ -105,7 +105,7 @@ router.route('/:id')
 
             user.firstName = req.body.firstName || user.firstName;
             user.lastName = req.body.lastName || user.lastName;
-            user.profilePicture = req.body.profilePicture || user.profilePicture;
+            user.image = req.body.image || user.image;
             user.rating = req.body.rating || user.rating;
             user.emailAddress = req.body.emailAddress || user.emailAddress;
             user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
