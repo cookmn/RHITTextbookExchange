@@ -7,7 +7,7 @@ var userSchema  = new mongoose.Schema({
     emailAddress: String,
     favoritedBuyOrders: [Number],
     favoritedSellOrders: [Number],
-    year: Number,
+    year: String,
     major: String,
     buyHistory: [Number],   //buy order ids
     sellHistory: [Number]

@@ -34,7 +34,8 @@ router.route('/')
       authors: req.body.authors,
       ISBN: req.body.ISBN,
       class: req.body.class,
-      imagePath: req.body.class
+      imagePath: req.body.class,
+      subject: req.body.subject
     }, function (err, book) {
       if (err) {
         res.send('problem adding book to the db');
@@ -97,12 +98,14 @@ router.route('/:id')
     .put(function(req, res) {
         mongoose.model('Textbook').findById(req.params.id, function (err, book) {
             book.title = req.body.title || book.title;
+            book.subject = req.body.subject || book.subject;
             book.authors = req.body.authors || book.authors;
             book.ISBN = req.body.ISBN || book.ISBN;
-            book.class = req.body.class || book.class;
-            book.imagePath = req.body.class || book.imagePath;
+            book.course = req.body.course || book.course;
+            book.condition = req.body.condition || book.condition;
+            book.imagePath = req.body.imagePath || book.imagePath;
 
-            book.save(function (err, textbook) {
+            book.save(function (err, book) {
                 if (err) {
                     res.status(404);
                     err = new Error('Problem updating book');
@@ -115,7 +118,7 @@ router.route('/:id')
                 } else {
                     res.format({
                         json: function() {
-                            res.json(textbook);
+                            res.json(book);
                         }
                     });
                 }
