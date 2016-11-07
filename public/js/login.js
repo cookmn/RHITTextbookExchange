@@ -19,9 +19,15 @@ $(document).ready(function() {
                 if(data) {
                     //redirect to index.html
                     //window.location.href = './homepage.html';
-                    console.log(data);
-					console.log("good stuff");
-                    //window.location.href = "./home.html";
+                    // console.log(data);
+					// console.log("good stuff");
+                    var userData = JSON.stringify(data);
+                    // console.log("string thing: " + userData);
+                    sessionStorage.setItem("userData", userData);
+                    // console.log("this is the data I got" + sessionStorage.getItem("userData"));
+                    // var userReturn = sessionStorage.getItem("userData");
+                    // console.log(JSON.parse(userReturn));
+                    window.location.href = "./home.html";
                     return false;
                 } else {
                     console.log('could not be verify rosefire');
