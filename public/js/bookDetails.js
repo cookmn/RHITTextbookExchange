@@ -142,26 +142,6 @@ function saveOrder() {
     return;
 }
 
-function createBook() {
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: book,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                //redirect to the page where they can't edit the info?
-            } else {
-                console.log("Book could not be created");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
-    return;
-}
-
 function deleteBook() {
     $.ajax({
         url: apiUrl + book._id,

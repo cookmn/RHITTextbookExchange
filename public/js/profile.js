@@ -35,9 +35,38 @@ var editProfileButton = document.getElementById("editProfile");
 
 var apiUrl = "http://localhost:3000/";
 var books, currUser, buyOrders, sellOrders, currUserID;
+var book = new Object();
+var buyOrder = new Object();
+var sellOrder = new Object();
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
+
+var title = document.getElementById("title");
+var titleText = title.appendChild(document.createElement('p'));
+var titleNode = document.getElementById("titleInput");
+var titleInput = document.createElement("textarea");
+
+var authorsNode = document.getElementById("authorsInput");
+var authorsInput = document.createElement("textarea");
+
+var ISBNNode = document.getElementById("ISBNInput");
+var ISBNInput = document.createElement("textarea");
+
+var conditionNode = document.getElementById("conditionInput");
+var conditionInput = document.createElement("textarea");
+
+var courseNode = document.getElementById("courseInput");
+var courseInput = document.createElement("textarea");
+
+var subjectNode = document.getElementById("subjectInput");
+var subjectInput = document.createElement("textarea");
+
+var priceNode = document.getElementById("priceInput");
+var priceInput = document.createElement("textarea");
+
+var commentsNode = document.getElementById("commentsInput");
+var commentsInput = document.createElement("textarea");
 
 $(document).ready(function () {
 	setup();
@@ -266,9 +295,8 @@ function populateOrders() {
 
 	}
 
-	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-	sellDiv.innerHTML += addNewButton;
-	buyDiv.innerHTML += addNewButton;
+	sellDiv.innerHTML += "<button id='buyOrder' class='newBook' href='' onclick='createNewSellOrder()'>+ Add New</button>";
+	buyDiv.innerHTML += "<button id='sellOrder' class='newBook' href='' onclick='createNewBuyOrder()'>+ Add New</button>";
 	// function setup() {
 
 	// }
@@ -409,6 +437,157 @@ function saveProfile() {
 		}
 	});
 	return;
+}
+
+function createNewSellOrder() {
+	inputBookInfo("sell");
+}
+
+function createNewBuyOrder() {
+	inputBookInfo("buy");
+}
+
+function createBook() {
+    $.ajax({
+        url: apiUrl + "books/",
+        type: 'POST',
+        data: book,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                //redirect to the page where they can't edit the info?
+            } else {
+                console.log("Book could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function createSellOrder() {
+    $.ajax({
+        url: apiUrl + "sellOrders/",
+        type: 'POST',
+        data: sellOrder,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                //redirect to the page where they can't edit the info?
+            } else {
+                console.log("Book could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function createBuyOrder() {
+    $.ajax({
+        url: apiUrl + "buyOrders/",
+        type: 'POST',
+        data: buyOrder,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                //redirect to the page where they can't edit the info?
+            } else {
+                console.log("Buy order could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function inputBookInfo(buyOrSell) {
+	var modal = document.getElementById('bookInfoModal');
+	var span = document.getElementsByClassName("close")[0];
+
+	titleInput.setAttribute("rows", "1");
+	titleInput.setAttribute("cols", "30");
+
+	authorsInput.setAttribute("rows", "1");
+	authorsInput.setAttribute("cols", "30");
+
+	ISBNInput.setAttribute("rows", "1");
+	ISBNInput.setAttribute("cols", "30");
+
+	conditionInput.setAttribute("rows", "1");
+	conditionInput.setAttribute("cols", "30");
+
+	courseInput.setAttribute("rows", "1");
+	courseInput.setAttribute("cols", "30");
+
+	subjectInput.setAttribute("rows", "1");
+	subjectInput.setAttribute("cols", "30");
+
+	priceInput.setAttribute("rows", "1");
+	priceInput.setAttribute("cols", "30");
+
+	commentsInput.setAttribute("rows", "1");
+	commentsInput.setAttribute("cols", "30");
+
+	titleNode.appendChild(titleInput);
+	authorsNode.appendChild(authorsInput);
+	ISBNNode.appendChild(ISBNInput);
+	conditionNode.appendChild(conditionInput);
+	courseNode.appendChild(courseInput);
+	subjectNode.appendChild(subjectInput);
+	priceNode.appendChild(priceInput);
+	commentsNode.appendChild(commentsInput);
+
+	modal.style.display = "block";
+	span.onclick = function () {
+		closeModal(buyOrSell);
+	}
+
+	window.onclick = function (event) {
+		if (event.target == modal) {
+			closeModal(buyOrSell);
+		}
+	}
+}
+
+function closeModal(buyOrSell) {
+    var modal = document.getElementById('bookInfoModal');
+    modal.style.display = "none";
+    authorsNode.removeChild(authorsNode.firstChild);
+    ISBNNode.removeChild(ISBNNode.firstChild);
+    conditionNode.removeChild(conditionNode.firstChild);
+    courseNode.removeChild(courseNode.firstChild);
+    subjectNode.removeChild(subjectNode.firstChild);
+    priceNode.removeChild(priceNode.firstChild);
+    titleNode.removeChild(titleNode.firstChild);
+    commentsNode.removeChild(commentsNode.firstChild);
+
+	book.title = titleInput.value;
+	book.ISBN = ISBNInput.value;
+	book.authors = authorsInput.value;
+	book.subject = subjectInput.value;
+	book.course = courseInput.value;
+	console.log(book);
+	createBook();
+	if (buyOrSell == "sell") {
+		sellOrder.condition = conditionInput.value;
+		sellOrder.price = priceInput.value;
+		sellOrder.book = book._id;
+		sellOrder.seller = currUserID;
+		createSellOrder();
+	} else {
+		buyOrder.condition = conditionInput.value;
+		buyOrder.price = priceInput.value;
+		buyOrder.book = book._id;
+		buyOrder.seller = currUserID;
+		createBuyOrder();
+	}
 }
 
 function loadImage(imagePath) {
