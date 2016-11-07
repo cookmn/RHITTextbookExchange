@@ -1,0 +1,83 @@
+/*this is for the home page*/
+/*
+html {
+	height: 100%;
+}
+*/
+body {
+	height: 100%;
+	margin-top: 2%;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+	border: 1px solid #C1C7C9;
+}
+
+#main-div {
+	/*height: 1000px;*/
+	overflow: auto;
+	min-width: 850px;
+
+}
+
+#buy-div {
+	display: inline-block;
+	float: left;
+	width: 50%;
+	text-align: center;
+	height: 100%;
+	min-height: 1000px;
+	padding-top: 2%;
+	/*margin-top: 5%;*/
+	/*padding-left: 15%;*/
+}
+
+#sell-div {
+	display: inline-block;
+	float: right;
+	width: 49%;
+	text-align: center;
+	height: 100%;
+	min-height: 1000px;
+	padding-top: 2%;
+	border-left: 1px solid #001111;
+}
+
+.search-div {
+	height: 100%;
+	/*min-height: 950px;*/
+	width: 80%;
+	padding: 1% 1% 1% 1%;
+}
+
+.search-div > div {
+	margin: 5px 5px 5px 5px;
+	height: 20%;
+	min-height: 190px;
+	overflow: auto;
+}
+
+.search-div div div:nth-child(1) {
+	display: inline-block;
+	float: right;
+	word-wrap: break-word;
+	width: 50%;
+}
+
+.search-div div div:nth-child(2) {
+	display: inline-block;
+	float: left;
+}
+
+.search-div div div p {
+	margin-top: 2px; 
+	text-align: left;
+}
+
+.search-div div div img {
+	float: left;
+	width: 170px;
+	height: 280px;
+}
+
+

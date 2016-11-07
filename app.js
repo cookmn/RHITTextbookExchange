@@ -15,6 +15,8 @@ var sellOrders = require('./routes/sellOrders');
 var buyOrders = require('./routes/buyOrders');
 var transactions = require('./routes/transactions');
 
+var RosefireTokenVerifier = require('rosefire-node');
+
 var app = express();
 app.use(cors());
 
@@ -31,6 +33,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   extensions: ['html']
 }));
+var SECRET = "hwiN2rg1Eu8wX350a9y5";
+var rosefire = new RosefireTokenVerifier(SECRET);
 
  app.use('/', routes);
  app.use('/books', books);
@@ -40,16 +44,16 @@ app.use(express.static(path.join(__dirname, 'public'), {
  app.use('/buyOrders', buyOrders);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+// app.use(function(req, res, next) {
+//   var err = new Error('Not Found');
+//   err.status = 404;
+//   next(err);
+// });
 
 // error handlers
 
-// development error handler
-// will print stacktrace
+//development error handler
+//will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -70,5 +74,30 @@ app.use(function(err, req, res, next) {
   });
 });
 
+app.post('/foobar', function (req, res) {
+  console.log("i am here");
+  var token = req.body.token;
+  if (!token) {
+    res.status(401).json({
+      error: 'Not authorized!1' + req.body.token
+    });
+    return;
+  }
+  // token = token.split(' ')[1];
+  rosefire.verify(token, function(err, authData) {
+    if (err) {
+      res.status(401).json({
+        error: 'Not authorized!2'
+      });
+    } else {
+      console.log(authData.username); // rockwotj
+      console.log(authData.issued_at); // <Date Object of issued time> 
+      console.log(authData.group); // STUDENT (Only there if options asked)
+      console.log(authData.expires) // <Date Object> (Only there if options asked)
+      res.json(authData);
+      //res.send(authData);
+    }
+  });
+});
 
 module.exports = app;

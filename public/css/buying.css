@@ -1,0 +1,40 @@
+body {
+	height: 100%;
+	margin-top: 2%;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+}
+
+#sort-by span {
+    display: inline-block;
+    padding: 10px;
+}
+
+#sort-title {
+    margin: 0px;
+}
+
+.sort {
+    margin: 10px;
+}
+
+.book-title {
+    margin-top: 70px;
+}
+
+.book-info {
+    display: block;
+    margin-left: 160px;
+}
+
+.book-div {
+    overflow: auto;
+    height: 200px;
+}
+
+
+img {
+    float: left;
+    display: block;
+}
