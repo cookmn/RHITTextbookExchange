@@ -34,10 +34,9 @@ var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
 
 var apiUrl = "http://localhost:3000/";
-var books, currUser, buyOrders, sellOrders, currUserID;
+var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook;
 var book = new Object();
-var buyOrder = new Object();
-var sellOrder = new Object();
+var order = new Object();
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
@@ -67,15 +66,14 @@ var priceInput = document.createElement("textarea");
 
 var commentsNode = document.getElementById("commentsInput");
 var commentsInput = document.createElement("textarea");
+	var sellingdiv = document.getElementById('selling');
 
 $(document).ready(function () {
 	setup();
 
 
 
-	var sellingdiv = document.getElementById('selling');
 	sellingdiv.innerHTML += isSellinghtml;
-	console.log(sellingdiv);
 	for (var i = 0; i < selling.length; i++) {
 		var html = "<div><div><p>" + selling[i].title + "</p>";
 		html += "<p>" + selling[i].price + "</p></div>";
@@ -83,7 +81,6 @@ $(document).ready(function () {
 		sellingdiv.innerHTML += html;
 	}
 	var buyingdiv = document.getElementById('buying');
-	console.log(buyingdiv);
 	buyingdiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buying.length; i++) {
 		var html = "<div><div><p>" + buying[i].title + "</p>";
@@ -232,16 +229,6 @@ function populateOrders() {
 		img.setAttribute('src', 'images/textbookcover.jpg');
 		img.setAttribute('id', 'sell-image' + i);
 		imgDiv.appendChild(img);
-
-		// users.forEach(function (user) {
-		// 	if (user._id === thisOrder.seller) {
-		// 		thisUser = user;
-		// 		return;
-		// 	}
-		// 	return;
-		// });
-
-		console.log(img, thisBook, thisOrder, currUser);
 		stupidClosures(img, thisBook, thisOrder, currUser);
 
 	}
@@ -258,6 +245,10 @@ function populateOrders() {
 			if (buyOrders[i].textbook === book._id) {
 				thisOrder = buyOrders[i];
 				thisBook = book;
+				console.log("This order: ");
+				console.log(thisOrder)
+				console.log("This book: ");
+				console.log(thisBook);
 				return;
 			}
 			return;
@@ -280,30 +271,16 @@ function populateOrders() {
 		img.setAttribute('src', 'images/textbookcover.jpg');
 		img.setAttribute('id', 'buy-image' + i);
 		imgDiv.appendChild(img);
-
-		// users.forEach(function (user) {
-		// 	if (user._id === thisOrder.buyer) {
-		// 		thisUser = user;
-		// 		return;
-		// 	}
-		// 	return;
-		// });
-
-		console.log(img, thisBook, thisOrder, currUser);
+		// console.log(img, thisBook, thisOrder, currUser);	
 		stupidClosures(img, thisBook, thisOrder, currUser);
-		// }
 
 	}
 
 	sellDiv.innerHTML += "<button id='buyOrder' class='newBook' href='' onclick='createNewSellOrder()'>+ Add New</button>";
 	buyDiv.innerHTML += "<button id='sellOrder' class='newBook' href='' onclick='createNewBuyOrder()'>+ Add New</button>";
-	// function setup() {
-
-	// }
 
 	function stupidClosures(img, book, order, user) {
 		img.addEventListener("click", function () {
-			console.log(book, order, user);
 			bookClickHandler(book, order, user)
 		}, false);
 	}
@@ -350,11 +327,10 @@ function submit() {
 		});
 
 	}
-	closeModal();
+	closeModal(buyOrSell);
 }
 
 function closeRatingModal() {
-	console.log("closing modal");
 	var modal = document.getElementById('ratingModal');
 	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
@@ -440,11 +416,13 @@ function saveProfile() {
 }
 
 function createNewSellOrder() {
-	inputBookInfo("sell");
+	buyOrSell = "sell";
+	inputBookInfo();
 }
 
 function createNewBuyOrder() {
-	inputBookInfo("buy");
+	buyOrSell = "buy";
+	inputBookInfo();
 }
 
 function createBook() {
@@ -455,7 +433,21 @@ function createBook() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
-                //redirect to the page where they can't edit the info?
+				createdBook = data;
+				order.condition = conditionInput.value;
+				order.price = priceInput.value;
+				order.textbook = createdBook._id;
+				var currentDate = new Date();
+				order.datePosted = currentDate.toDateString();
+				order.description = commentsInput.value;
+				order.favoritedCount = "0";
+				if (buyOrSell == "sell") {
+					order.seller = currUserID;
+					createSellOrder();
+				} else {
+					order.buyer = currUserID;
+					createBuyOrder();
+				}
             } else {
                 console.log("Book could not be created");
             }
@@ -471,10 +463,14 @@ function createSellOrder() {
     $.ajax({
         url: apiUrl + "sellOrders/",
         type: 'POST',
-        data: sellOrder,
+        data: order,
         dataType: 'JSON',
         success: function (data) {
             if (data) {
+				var html = "<div><div><p>" + createdBook.title + "</p>";
+				html += "<p>" + createdBook.price + "</p></div>";
+				html += "<div><img src=" + createdBook.image + "></img></div></div></br>";
+				sellingdiv.innerHTML += html;
                 //redirect to the page where they can't edit the info?
             } else {
                 console.log("Book could not be created");
@@ -488,10 +484,11 @@ function createSellOrder() {
 }
 
 function createBuyOrder() {
+	console.log("creating buy order");
     $.ajax({
         url: apiUrl + "buyOrders/",
         type: 'POST',
-        data: buyOrder,
+        data: order,
         dataType: 'JSON',
         success: function (data) {
             if (data) {
@@ -507,7 +504,7 @@ function createBuyOrder() {
     return;
 }
 
-function inputBookInfo(buyOrSell) {
+function inputBookInfo() {
 	var modal = document.getElementById('bookInfoModal');
 	var span = document.getElementsByClassName("close")[0];
 
@@ -546,17 +543,17 @@ function inputBookInfo(buyOrSell) {
 
 	modal.style.display = "block";
 	span.onclick = function () {
-		closeModal(buyOrSell);
+		closeModal();
 	}
 
 	window.onclick = function (event) {
 		if (event.target == modal) {
-			closeModal(buyOrSell);
+			closeModal();
 		}
 	}
 }
 
-function closeModal(buyOrSell) {
+function closeModal() {
     var modal = document.getElementById('bookInfoModal');
     modal.style.display = "none";
     authorsNode.removeChild(authorsNode.firstChild);
@@ -573,21 +570,12 @@ function closeModal(buyOrSell) {
 	book.authors = authorsInput.value;
 	book.subject = subjectInput.value;
 	book.course = courseInput.value;
-	console.log(book);
 	createBook();
-	if (buyOrSell == "sell") {
-		sellOrder.condition = conditionInput.value;
-		sellOrder.price = priceInput.value;
-		sellOrder.book = book._id;
-		sellOrder.seller = currUserID;
-		createSellOrder();
-	} else {
-		buyOrder.condition = conditionInput.value;
-		buyOrder.price = priceInput.value;
-		buyOrder.book = book._id;
-		buyOrder.seller = currUserID;
-		createBuyOrder();
-	}
+	setTimeout(makeOrder(), 10000);
+}
+
+function makeOrder() {
+
 }
 
 function loadImage(imagePath) {
@@ -601,8 +589,6 @@ function editProfile() {
 
 		firstNameInput.setAttribute("rows", "1");
 		firstNameInput.setAttribute("cols", "30");
-		console.log("profile is: ");
-		console.log(currUser);
 		firstNameInput.innerHTML = currUser.firstName;
 
 		lastNameInput.setAttribute("rows", "1");
@@ -635,7 +621,6 @@ function editProfile() {
 		}
 		window.onclick = function (event) {
 			if (event.target == modal) {
-				console.log("this is where i am");
 				if (isYourProfile) {
 					closeModal();
 				} else {
