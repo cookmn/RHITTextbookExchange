@@ -281,13 +281,13 @@ function closeRatingModal() {
 	currUser.rating.push(1);
 	console.log(currUser.rating);
 	saveProfile();
-	console.log(currUser.rating);
 	//console.log(currUser.rating);
 	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
 }
 
 	function saveProfile() {
+		console.log(currUser);
 	$.ajax({
 		url: apiUrl + "users/" + currUser._id,
 		type: 'PUT',
@@ -297,6 +297,7 @@ function closeRatingModal() {
 			if (data) {
 				console.log("putting user data");
 				console.log(currUser);
+				return false;
 			} else {
 				console.log("Profile info could not be updated");
 			}
