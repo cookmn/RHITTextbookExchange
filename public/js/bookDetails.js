@@ -354,6 +354,9 @@ function editBook() {
         priceNode.appendChild(priceInput);
         commentsNode.appendChild(commentsInput);
 
+        var submitButton = document.getElementById("submit");
+        submitButton.addEventListener("click", submit);
+
         modal.style.display = "block";
         span.onclick = function () {
             closeModal();
