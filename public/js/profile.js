@@ -328,10 +328,12 @@ function populateOrders() {
 
 	buyOrders.forEach(function (buyOrder) {
 		var bought;
+		var thisTransaction; 
 		transactions.forEach(function (transaction) {
 			if(buyOrder._id === transaction.orderID && buyOrder.buyer === currUser._id) {
 				console.log("Found a transaction attached to this buy order!");
 				bought = true;
+				thisTransaction = transaction;
 				console.log(buyOrder);
 				console.log(transaction);
 				return;
