@@ -4,7 +4,7 @@
     var books;
     var buyOrders;
     var buyers;
-    var isbnString;
+    var isbnString, subjectString;
 
     function setup() {
         getBuyOrders();
@@ -159,13 +159,14 @@
     }
 
     function getSortForms() {
-        var sortBySubject = document.getElementById("sort-subject");
+        var sortBySubject = $('#sort-subject');
         var sortByPrice = document.getElementById("sort-price");
         var findByIsbn = $('#sort-isbn');
 
-        sortBySubject.addEventListener("change", function() {
-            var subject = sortBySubject.value;
-            filterBooksBySubject(subject);
+        sortBySubject.on('input', function() {
+            subjectString = $(this).val();
+            console.log(subjectString);
+            filterBooksBySubject(subjectString);
         })
 
         sortByPrice.addEventListener("change", function() {
@@ -182,11 +183,10 @@
     function filterBooksBySubject(subject) {
         var newBooks = [];
         books.forEach(function(book) {
-            if (book.subject === subject) {
+            if (book.subject.toString().includes(subject)) {
                 newBooks.push(book);
             }
         });
-
         displayBooks(newBooks);
     }
 
