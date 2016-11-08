@@ -37,7 +37,6 @@ var imageNode = document.getElementById("imageInput");
 
 var ratingNode = document.getElementById("ratingInput");
 var isYourProfile = true;
-var editProfileButton = document.getElementById("editProfile");
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
@@ -75,15 +74,14 @@ $(document).ready(function () {
 });
 
 function setup() {
+	//THIS DOESN'T WORK
+	var editProfileButton = document.getElementById("editProfile");
+	editProfileButton.addEventListener("click", editProfile);
 	getAllUsers();
 	setTimeout(function () { getCurrentUser() }, 300);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
-	editProfileButton.innerHTML = "Rate User";
-	if (isYourProfile) {
-		editProfileButton.innerHTML = "Edit Profile";
-	}
 	setTimeout(function () { populateOrders() }, 800);
 }
 
@@ -253,7 +251,7 @@ function populateOrders() {
 
 			var bookDiv = sellDiv.appendChild(document.createElement('div'));
 			var textDiv = bookDiv.appendChild(document.createElement('div'));
-			
+
 			var title = document.createElement('p');
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
@@ -265,7 +263,7 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click( function () {
+			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
 			});
 		}
@@ -301,7 +299,7 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click( function () {
+			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
 			});
 		}
@@ -592,6 +590,7 @@ function loadImage(imagePath) {
 }
 
 function editProfile() {
+	console.log("editting profile");
 	if (isYourProfile) {
 		var modal = document.getElementById('myModal');
 		var span = document.getElementsByClassName("close")[0];
@@ -628,6 +627,9 @@ function editProfile() {
 			closeEditModal();
 
 		}
+
+		var submitButton = document.getElementById("submit");
+		submitButton.addEventListener("click", submit);
 		window.onclick = function (event) {
 			if (event.target == modal) {
 				if (isYourProfile) {
