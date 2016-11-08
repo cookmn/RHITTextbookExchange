@@ -16,17 +16,9 @@ h1 {
 	font-size: 45pt;
 }
 
-h3 {
+button {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 	font-size: 20pt;
-}
-
-input {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
-button {
 	text-align: center;
 	margin: auto;
 }
