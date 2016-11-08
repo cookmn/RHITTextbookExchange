@@ -28,7 +28,7 @@
       if (rosefireWindow.closed) {
           clearInterval(intervalId);
           if (callback) {
-            callback(new Error('Login cancelled'));
+            callback(new Error('Login cancelled, origin: ' + origin));
             callback = null;
           }
       }

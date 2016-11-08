@@ -70,7 +70,6 @@ function loadBook() {
         user = JSON.parse(userToViewString);
         order = JSON.parse(orderToViewString);
     }
-    console.log("getting book");
 }
 
 function getBook() {
@@ -141,26 +140,6 @@ function saveOrder() {
             var errorMsg = document.getElementById('error-msg');
             errorMsg.style.color = 'red';
             errorMsg.textContent = "Price is not a number, please enter a valid number.";
-        }
-    });
-    return;
-}
-
-function createBook() {
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: book,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                //redirect to the page where they can't edit the info?
-            } else {
-                console.log("Book could not be created");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
         }
     });
     return;
@@ -413,7 +392,6 @@ function submit() {
         order.condition = conditionInput.value;
         book.course = courseInput.value;
         order.price = priceInput.value;
-        console.log(book);
         saveBook();
         saveOrder();
     } else {

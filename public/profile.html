@@ -14,7 +14,7 @@
 		<div id="navbar"></div>
 		<div id="main-div">
 			<div id="info">
-            <div id="profile-image" class="book"></div>
+				<div id="profile-image" class="book"></div>
 				<button id="editProfile" onclick="editProfile()"></button>
 				<div id="book-text" class="profileInfo">
 					<div id="name" class="book"></div>
@@ -69,6 +69,46 @@
 				</tr>
 			</table>
 			<button id="submit" class="modalButton" onclick="closeRatingModal()">Submit</button>
+		</div>
+	</div>
+		<div id="bookInfoModal" class="modal">
+		<div class="modal-content">
+			<span class="close">x</span>
+			<table class="modalTable">
+				<tr>
+					<td id="title" class="title">Title:</td>
+					<td id="titleInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="authors" class="title">Authors:</td>
+					<td id="authorsInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="ISBN" class="title">ISBN:</td>
+					<td id="ISBNInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="condition" class="title">Condition:</td>
+					<td id="conditionInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="course" class="title">Class:</td>
+					<td id="courseInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="subject" class="title">Subject:</td>
+					<td id="subjectInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="price" class="title">Price:</td>
+					<td id="priceInput" class="textArea"></td>
+				</tr>
+				<tr>
+					<td id="comments" class="title">Comments:</td>
+					<td id="commentsInput" class="textArea"></td>
+				</tr>
+			</table>
+			<button id="submit-book" class="modalButton">Submit</button>
 		</div>
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
