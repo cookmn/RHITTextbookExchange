@@ -26,7 +26,6 @@ body {
 	min-width: 850px;
 }
 
-
 div#img  {
 	float: left;
 	display: inline-block;
@@ -116,7 +115,7 @@ div#img  {
 .bookdivs > div {
 	margin: 1% 1% 1% 1%;
 	height: 20%;
-	width: 65%;
+	width: 85%;
 	overflow: auto; /* This is how you fix the weird "height of 0, div not fitting contents" issue! (Specific to when you have contents floated left/right) */
 }
 
