@@ -15,7 +15,6 @@
 		html+="<p>"+data[i].price+"</p></div>";
 		html += "<div><img src=" + data[i].image + "></img></div></div></br>";
 		var searchdiv = document.getElementById('buy-search-div'); 
-		// console.log(searchdiv);
 		
 		searchdiv.innerHTML += html;
 	}

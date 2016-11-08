@@ -117,7 +117,6 @@ function saveOrder() {
     } else if (buyOrSell === "sell") {
         urlSecondPart = "sellOrders/";
     } else {
-        console.log("buyOrSell is: " + buyOrSell);
         closeModal();
         return;
     }
