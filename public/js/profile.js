@@ -66,13 +66,17 @@ var priceInput = document.createElement("textarea");
 
 var commentsNode = document.getElementById("commentsInput");
 var commentsInput = document.createElement("textarea");
-	var sellingdiv = document.getElementById('selling');
+var sellingdiv = document.getElementById('selling');
+var buyingdiv = document.getElementById("buying");
 
 $(document).ready(function () {
 	setup();
+	drawBooks();
+});
 
-
-
+function drawBooks() {
+	sellingdiv.innerHTML = "";
+	buyingdiv.innerHTML = "";
 	sellingdiv.innerHTML += isSellinghtml;
 	for (var i = 0; i < selling.length; i++) {
 		var html = "<div><div><p>" + selling[i].title + "</p>";
@@ -80,7 +84,6 @@ $(document).ready(function () {
 		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
 		sellingdiv.innerHTML += html;
 	}
-	var buyingdiv = document.getElementById('buying');
 	buyingdiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buying.length; i++) {
 		var html = "<div><div><p>" + buying[i].title + "</p>";
@@ -90,7 +93,7 @@ $(document).ready(function () {
 		buyingdiv.innerHTML += html;
 
 	}
-});
+}
 
 function setup() {
 	getCurrentUser();
@@ -185,7 +188,6 @@ function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 
-	// var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
 	var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
 	html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
@@ -193,12 +195,13 @@ function populateOrders() {
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
 	html += "<p>Rating: " + currUser.rating + "/5</p>";
 	html += "</div>";
-	// console.log(searchdiv);
+	
 	var info = document.getElementById("info");
 
-	info.innerHTML += html;
+	info.innerHTML = html;
 
 	var sellDiv = document.getElementById('selling');
+	sellDiv.innerHTML = "";
 	sellDiv.innerHTML += isSellinghtml;
 	for (var i = 0; i < sellOrders.length; i++) {
 		var thisBook, thisOrder;
@@ -237,6 +240,7 @@ function populateOrders() {
 
 
 	var buyDiv = document.getElementById('buying');
+	buyDiv.innerHTML = "";
 	buyDiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buyOrders.length; i++) {
 		var thisBook, thisOrder;
@@ -245,10 +249,6 @@ function populateOrders() {
 			if (buyOrders[i].textbook === book._id) {
 				thisOrder = buyOrders[i];
 				thisBook = book;
-				console.log("This order: ");
-				console.log(thisOrder)
-				console.log("This book: ");
-				console.log(thisBook);
 				return;
 			}
 			return;
@@ -335,18 +335,6 @@ function closeRatingModal() {
 	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
 }
-
-function closeModal() {
-	var modal = document.getElementById('myModal');
-	modal.style.display = "none";
-	firstNameNode.removeChild(firstNameNode.firstChild);
-	lastNameNode.removeChild(lastNameNode.firstChild);
-	imageNode.removeChild(imageNode.firstChild);
-	yearNode.removeChild(yearNode.firstChild);
-	majorNode.removeChild(majorNode.firstChild);
-}
-
-
 
 // Load book from browser session storage
 function loadProfile() {
@@ -467,11 +455,8 @@ function createSellOrder() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
-				var html = "<div><div><p>" + createdBook.title + "</p>";
-				html += "<p>" + createdBook.price + "</p></div>";
-				html += "<div><img src=" + createdBook.image + "></img></div></div></br>";
-				sellingdiv.innerHTML += html;
-                //redirect to the page where they can't edit the info?
+				sellOrders.push(data);
+				location.reload();
             } else {
                 console.log("Book could not be created");
             }
@@ -492,7 +477,8 @@ function createBuyOrder() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
-                //redirect to the page where they can't edit the info?
+				buyOrders.push(data);
+				location.reload();
             } else {
                 console.log("Buy order could not be created");
             }
@@ -571,11 +557,6 @@ function closeModal() {
 	book.subject = subjectInput.value;
 	book.course = courseInput.value;
 	createBook();
-	setTimeout(makeOrder(), 10000);
-}
-
-function makeOrder() {
-
 }
 
 function loadImage(imagePath) {
