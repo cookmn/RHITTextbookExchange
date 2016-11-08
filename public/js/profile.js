@@ -82,7 +82,6 @@ function handlePicPath() { //this method will take the selected file and convert
 	reader.onloadend = function (fileLoadedEvent) {
         console.log(fileLoadedEvent.target.result); //dumps the base64 data to the console. 
 		imageSRC = fileLoadedEvent.target.result;
-		document.getElementById("profilePic").src = imageSRC;
     }
 	reader.readAsDataURL(file);
 }
@@ -232,8 +231,10 @@ function getSellOrders() {
 function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
-
-	var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
+	if (currUser.image == null || currUser.image == "") {
+		currUser.image = "images/user-blank.png"
+	}
+	var html = "<div id='img'><img id='profilePic' src=" + currUser.image + "></div>"
 	html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
