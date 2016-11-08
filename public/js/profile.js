@@ -70,8 +70,15 @@ var sellingdiv = document.getElementById('selling');
 var buyingdiv = document.getElementById("buying");
 
 $(document).ready(function () {
+	validateUser();
 	setup();
 });
+
+function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
+}
 
 function setup() {
 	getAllUsers();
@@ -680,7 +687,6 @@ function editProfile() {
 		modal.style.display = "block";
 		span.onclick = function () {
 			closeEditModal();
-
 		}
 
 		var submitButton = document.getElementById("submit");

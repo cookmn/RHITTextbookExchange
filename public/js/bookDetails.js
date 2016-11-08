@@ -402,6 +402,9 @@ function submit() {
 }
 
 $(document).ready(function () {
+
+    validateUser();
+
     loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
@@ -451,5 +454,11 @@ function setup() {
     // if (isYourBook) {
         // editBookButton.innerHTML = "Edit Book";
     // }
+}
+
+function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
 }
 

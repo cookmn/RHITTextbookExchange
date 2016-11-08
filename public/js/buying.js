@@ -231,8 +231,14 @@
     }
 
     $(window).on('load', function () {
-        //load in initial state
+        validateUser();
         setup();
     })
+
+    function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
+}
 
 })();
