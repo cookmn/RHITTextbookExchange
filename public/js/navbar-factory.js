@@ -10,8 +10,11 @@ window.onload = function() {
 				'<li>'+
 					'<a href="./buying.html">Buying</a>'+
 				'</li>'+
-				'<li id="rightli">'+
-				'<a href="./profile.html">View Profile</a>'+
-				'</li>'
+				'<li class="rightli">'+
+					'<a href="./profile.html">View Profile</a>'+
+				'</li>'+
+				'<li class="rightli">'+
+					'<a href="./login.html">Log Out</a>'+
+				'</li>'+
 			'</ol>';
 	}
