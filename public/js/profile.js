@@ -256,7 +256,7 @@ function populateOrders() {
 
 			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
 				var deleteButton = document.createElement('button');
-				deleteButton.innerHTML = "Delete Order";
+				deleteButton.innerHTML = "Delete";
 				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
 				textDiv.appendChild(deleteButton);
 			}
@@ -299,7 +299,7 @@ function populateOrders() {
 
 			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
 				var deleteButton = document.createElement('button');
-				deleteButton.innerHTML = "Delete Order";
+				deleteButton.innerHTML = "Delete";
 				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
 				textDiv.appendChild(deleteButton);
 			}
