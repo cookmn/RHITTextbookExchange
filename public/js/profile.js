@@ -74,9 +74,6 @@ $(document).ready(function () {
 });
 
 function setup() {
-	//THIS DOESN'T WORK
-	var editProfileButton = document.getElementById("editProfile");
-	editProfileButton.addEventListener("click", editProfile);
 	getAllUsers();
 	setTimeout(function () { getCurrentUser() }, 300);
 	getBuyOrders();
@@ -232,6 +229,9 @@ function populateOrders() {
 	var info = document.getElementById("info");
 
 	info.innerHTML += html;
+	
+	var editProfileButton = document.getElementById("editProfile");
+	editProfileButton.addEventListener("click", editProfile);
 
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
