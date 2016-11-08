@@ -6,8 +6,8 @@ var order;
 var buyOrSell;
 var editForm = false;
 var isYourBook = true;
-var editBookButton = document.getElementById("editBook");
 var userID = 1;
+var currentUser;
 
 var title = document.getElementById("title");
 var titleText = title.appendChild(document.createElement('p'));
@@ -54,13 +54,11 @@ function loadBook() {
     var error = false;
     var bookToViewString;
     var orderToViewString;
-    var buyerToViewString;
-    var buyOrSellString;
+    var userToViewString;
     try {
         bookToViewString = sessionStorage.getItem("bookToView");
         orderToViewString = sessionStorage.getItem("orderToView");
-        buyerToViewString = sessionStorage.getItem("buyerToView");
-        buyOrSellString = sessionStorage.getItem("buyOrSell");
+        userToViewString = sessionStorage.getItem("userToView");
     } catch (e) {
         alert("Error when reading from Session Storage " + e);
         error = true;
@@ -69,9 +67,8 @@ function loadBook() {
     }
     if (!error) {
         book = JSON.parse(bookToViewString);
-        user = JSON.parse(buyerToViewString);
+        user = JSON.parse(userToViewString);
         order = JSON.parse(orderToViewString);
-        buyOrSell = JSON.parse(buyOrSellString);
     }
 }
 
@@ -115,10 +112,14 @@ function saveBook() {
 }
 
 function saveOrder() {
-    if (buyOrSell == "buy") {
+    if (buyOrSell === "buy") {
         var urlSecondPart = "buyOrders/";
-    } else {
+    } else if (buyOrSell === "sell") {
         urlSecondPart = "sellOrders/";
+    } else {
+        console.log("buyOrSell is: " + buyOrSell);
+        closeModal();
+        return;
     }
     $.ajax({
         url: apiUrl + urlSecondPart + order._id,
@@ -191,6 +192,7 @@ function loadBuyerInfo() {
     var date = document.getElementById("date");
     var sellerComments = document.getElementById("seller-comments");
 
+
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
     sellerNameText.textContent = "Seller: " + user.firstName + " " + user.lastName;
     var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
@@ -207,6 +209,103 @@ function loadBuyerInfo() {
         var commentsText = sellerComments.appendChild(document.createElement('p'));
         commentsText.textContent = "Seller Comments: " + order.description;
     }
+}
+
+function getCurrentUserID() {
+    $.ajax({
+        url: apiUrl + "users/",
+        type: 'GET',
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                data.forEach(function (user) {
+                    if (user.emailAddress === JSON.parse(sessionStorage.getItem("userData")).email) {
+                        currentUser = user;
+                        return;
+                    }
+                    return;
+                });
+                // console.log(currUser);
+            } else {
+                console.log("User info could not get got");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    })
+}
+
+function favoriteHandler() {
+    var favorite = document.getElementById("favorite"); 
+    var favSpan = document.getElementById("favorited");
+    if (favorite.innerHTML === "Favorite Book") {
+        favorite.innerHTML = "Unfavorite Book";
+        favSpan.style.visibility = "visible";
+        //make ajax PUT request
+    } else {
+        favorite.innerHTML = "Favorite Book";
+        favSpan.style.visibility = "hidden";
+        //make ajax PUT request
+    }
+}
+
+function buyBook() {
+    var transaction = {
+        isBuy: true,
+        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+        customerID: currentUser._id,
+        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+    };
+
+    console.log(transaction);
+
+    $.ajax({
+        url: apiUrl + "transactions/",
+        type: 'POST',
+        data: transaction,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                console.log(data);
+            } else {
+                console.log("error posting");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+}
+
+function sellBook() {
+    console.log("You just called sellBook()!");
+
+    var transaction = {
+        isBuy: false,
+        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+        customerID: currentUser._id,
+        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+    };
+
+    console.log(transaction);
+
+    $.ajax({
+        url: apiUrl + "transactions/",
+        type: 'POST',
+        data: transaction,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+                console.log(data);
+            } else {
+                console.log("error posting");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });    
 }
 
 function editBook() {
@@ -267,14 +366,7 @@ function editBook() {
         }
 
     } else {
-        var favorited = document.getElementById("favorited");
-        if (editBookButton.innerHTML == "Favorite Book") {
-            editBookButton.innerHTML = "Unfavorite Book";
-            favorited.style.visibility = "visible";
-        } else {
-            editBookButton.innerHTML = "Favorite Book";
-            favorited.style.visibility = "hidden";
-        }
+
     }
 }
 
@@ -308,25 +400,54 @@ function submit() {
 }
 
 $(document).ready(function () {
-    editForm = true;
+    if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
+        editForm = true;
+    } else {
+        editForm = false;
+    }
+    console.log(editForm);
     loadBook();
     loadImage();
     setup();
 });
 
 function setup() {
-    var bookDiv = document.getElementById("book-info");
-    var sellerDiv = document.getElementById("seller-info");
-
+    getCurrentUserID();
     loadBookInfo();
     loadBuyerInfo();
 
-    var favButton = document.getElementById("fav-button");
-    var editBook = document.getElementById("editBook");
-    editBook.addEventListener("click", editBook, false);
-    editBookButton.innerHTML = "Favorite Book";
-    if (isYourBook) {
+    var editBookButton = document.getElementById("buySellEdit");
+    var favoriteButton = document.getElementById("favorite");
+    var functionToCall;
+    if(editForm) {
         editBookButton.innerHTML = "Edit Book";
+        functionToCall = editBook;
+        console.log("this is your order");
+        favoriteButton.style.visibility = "hidden";
+
+        if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
+            buyOrSell = "buy";
+        } else {
+            buyOrSell = "sell";
+        }
+
+    } else if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
+        favoriteButton.innerHTML = "Favorite Book";
+        editBookButton.innerHTML = "Sell Book";
+        functionToCall = sellBook;
+        console.log("this is a sell order");
+
+    } else {
+        editBookButton.innerHTML = "Buy Book";
+        favoriteButton.innerHTML = "Favorite Book";
+        functionToCall = buyBook;
+        console.log("this is a buy order");
+
     }
+    editBookButton.addEventListener("click", function () { functionToCall() }, false);
+    favoriteButton.addEventListener("click", function () { favoriteHandler() }, false);
+    // if (isYourBook) {
+        // editBookButton.innerHTML = "Edit Book";
+    // }
 }
 
