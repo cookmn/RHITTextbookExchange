@@ -165,7 +165,6 @@ function addUser(tempUser) {
 	});
 }
 
-
 function getBuyOrders() {
 	$.ajax({
 		url: apiUrl + "buyOrders/",
@@ -266,11 +265,9 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click(
-				function () {
-					bookClickHandler(thisBook, thisOrder, currUser);
-				}
-			);
+			img.click( function () {
+				bookClickHandler(thisBook, thisOrder, currUser);
+			});
 		}
 	});
 
@@ -304,11 +301,9 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click(
-				function () {
-					bookClickHandler(thisBook, thisOrder, currUser);
-				}
-			);
+			img.click( function () {
+				bookClickHandler(thisBook, thisOrder, currUser);
+			});
 		}
 	});
 
@@ -351,12 +346,10 @@ function submit() {
 		saveProfile();
 		loadImage(currUser.image);
 	} else {
-
 		$(document).ready(function () {
 			//load in initial state
 			setup();
 		});
-
 	}
 	closeModal(buyOrSell);
 }
@@ -523,7 +516,7 @@ function createBuyOrder() {
 
 function inputBookInfo() {
 	var modal = document.getElementById('bookInfoModal');
-	var span = document.getElementsByClassName("close")[0];
+	var span = document.getElementsByClassName("close")[2];
 
 	titleInput.setAttribute("rows", "1");
 	titleInput.setAttribute("cols", "30");
@@ -558,14 +551,17 @@ function inputBookInfo() {
 	priceNode.appendChild(priceInput);
 	commentsNode.appendChild(commentsInput);
 
+	var submitBook = document.getElementById("submit-book");
+	submitBook.addEventListener("click", closeModal);
+
 	modal.style.display = "block";
 	span.onclick = function () {
-		closeModal();
+		closeBookModal();
 	}
 
 	window.onclick = function (event) {
 		if (event.target == modal) {
-			closeModal();
+			closeBookModal();
 		}
 	}
 }
@@ -578,6 +574,18 @@ function closeModal() {
 	book.course = courseInput.value;
 	createBook();
 }
+
+function closeBookModal() {
+	var modal = document.getElementById("bookInfoModal");
+	modal.style.display = "none";
+}
+
+function closeEditModal() {
+	var modal = document.getElementById("myModal");
+	console.log(modal);
+	modal.style.display = "none";
+}
+
 
 function loadImage(imagePath) {
 	image.setAttribute('src', imagePath);
@@ -617,13 +625,13 @@ function editProfile() {
 
 		modal.style.display = "block";
 		span.onclick = function () {
-			closeModal();
+			closeEditModal();
 
 		}
 		window.onclick = function (event) {
 			if (event.target == modal) {
 				if (isYourProfile) {
-					closeModal();
+					closeEditModal();
 				} else {
 					closeRatingModal();
 				}
