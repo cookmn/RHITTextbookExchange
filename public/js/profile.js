@@ -406,7 +406,7 @@ function submit() {
 			setup();
 		});
 	}
-	closeModal(buyOrSell);
+	closeEditModal();
 }
 
 function closeRatingModal() {
