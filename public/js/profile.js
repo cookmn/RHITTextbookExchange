@@ -32,7 +32,6 @@ var boughtText = major.appendChild(document.createElement('p'));
 
 var profileImage = document.getElementById("profile-image");
 var image = profileImage.appendChild(document.createElement('img'));
-var imageInput = document.createElement("textarea");
 var imageNode = document.getElementById("imageInput");
 
 var ratingNode = document.getElementById("ratingInput");
@@ -70,10 +69,25 @@ var commentsInput = document.createElement("textarea");
 var sellingdiv = document.getElementById('selling');
 var buyingdiv = document.getElementById("buying");
 
+//these variables relate to image storage, use as reference for adding it elsewhere in the project
+var imageInput = document.getElementById("imageInput"); //this is the file chooser that appears in the modal
+var imageSRC; //this is set to the result of the file reader upon converting a file to base64 data
+
 $(document).ready(function () {
 	setup();
 	drawBooks();
 });
+
+function handlePicPath() { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
+	var file = document.querySelector('input[type=file]').files[0]; //get the file from the input with type field 
+	var reader = new FileReader();
+	reader.onloadend = function (fileLoadedEvent) {
+        console.log(fileLoadedEvent.target.result); //dumps the base64 data to the console. 
+		imageSRC = fileLoadedEvent.target.result;
+		document.getElementById("profilePic").src = imageSRC;
+    }
+	reader.readAsDataURL(file);
+}
 
 function drawBooks() {
 	sellingdiv.innerHTML = "";
@@ -106,6 +120,7 @@ function setup() {
 		editProfileButton.innerHTML = "Edit Profile";
 	}
 	setTimeout(function () { populateOrders() }, 800);
+	imageInput.addEventListener("change", handlePicPath); //add handler to image file chooser
 }
 
 function getAllUsers() {
@@ -374,7 +389,7 @@ function submit() {
 		currUser.lastName = lastNameInput.value;
 		currUser.year = yearInput.value;
 		currUser.major = majorInput.value;
-		currUser.image = imageInput.value;
+		currUser.image = imageSRC;
 		saveProfile();
 		loadImage(currUser.image);
 	} else {
@@ -623,9 +638,10 @@ function editProfile() {
 		lastNameInput.setAttribute("cols", "30");
 		lastNameInput.innerHTML = currUser.lastName;
 
-		imageInput.setAttribute("rows", "1");
-		imageInput.setAttribute("cols", "30");
-		imageInput.innerHTML = currUser.image;
+		// imageInput.setAttribute("rows", "1");
+		// imageInput.setAttribute("cols", "30");
+		// imageInput.innerHTML = currUser.image;
+		//imageInput.setAttribute("type", "file");
 
 		yearInput.setAttribute("rows", "1");
 		yearInput.setAttribute("cols", "30");
@@ -637,7 +653,7 @@ function editProfile() {
 
 		firstNameNode.appendChild(firstNameInput);
 		lastNameNode.appendChild(lastNameInput);
-		imageNode.appendChild(imageInput);
+		//imageNode.appendChild(imageInput);
 		yearNode.appendChild(yearInput);
 		majorNode.appendChild(majorInput);
 
