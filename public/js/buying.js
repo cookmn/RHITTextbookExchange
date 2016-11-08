@@ -5,12 +5,15 @@
     var buyOrders;
     var buyers;
     var isbnString;
+    var transactions;
 
     function setup() {
         getBuyOrders();
         getBuyers();
-        getBooks();
-        getSortForms();
+        getTransactions();
+        setTimeout(function () {getBooks()}, 100);
+        setTimeout(function () {getSortForms()}, 100);
+        
     }
 
     function getBooks() {
@@ -30,6 +33,24 @@
                 console.log(err, status, req);
             }
         })
+    }
+
+    function getTransactions() {
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    transactions = data;
+                } else {
+                    console.log("Buy order books could not get got");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        }); 
     }
 
     function getBuyOrders() {
@@ -85,7 +106,20 @@
                 return;
             })
 
-            if (thisOrder) {
+            var bought = false;
+            transactions.forEach(function (transaction) {
+
+                if(order._id === transaction.orderID) {
+                    console.log("Found a transaction attached to this buy order!");
+                    bought = true;
+                    console.log(order);
+                    console.log(transaction);
+                    return;
+                }
+                return;
+            });
+
+            if (thisOrder && !bought) {
                 var bookDiv = listDiv.appendChild(document.createElement('div'));
                 bookDiv.className = "book-div";
                 var img = $('<img id="book-cover">');

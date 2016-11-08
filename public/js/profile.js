@@ -1,7 +1,7 @@
 "use strict";
 
 var apiUrl = "http://localhost:3000/";
-var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers;
+var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers, transactions;
 var book = new Object();
 var order = new Object();
 
@@ -79,6 +79,7 @@ function setup() {
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
+	getTransactions();
 	setTimeout(function () { populateOrders() }, 800);
 }
 
@@ -196,6 +197,24 @@ function getBooks() {
 	});
 }
 
+function getTransactions() {
+	$.ajax({
+		url: apiUrl + "transactions/",
+		type: 'GET',
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
+				transactions = data;
+			} else {
+				console.log("Buy order books could not get got");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});	
+}
+
 function getSellOrders() {
 	$.ajax({
 		url: apiUrl + "sellOrders/",
@@ -236,7 +255,22 @@ function populateOrders() {
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
 	sellDiv.innerHTML += isSellinghtml;
+	//-----------------------------
+
 	sellOrders.forEach(function (sellOrder) {
+		var sold = false;
+		transactions.forEach(function (transaction) {
+
+			if(sellOrder._id === transaction.orderID && sellOrder.seller === currUser._id) {
+				console.log("Found a transaction attached to this sell order!");
+				sold = true;
+				console.log(sellOrder);
+				console.log(transaction);
+				return;
+			}
+			return;
+		});
+	
 		if (sellOrder.seller === currUser._id) {
 			var thisBook, thisOrder;
 
@@ -263,7 +297,11 @@ function populateOrders() {
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
+			if(sold) {
+				price.innerHTML = "SOLD";
+			} else {
+				price.innerHTML = "$" + thisOrder.price;
+			}
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -276,10 +314,25 @@ function populateOrders() {
 		}
 	});
 
+
 	var buyDiv = document.getElementById('buying');
 	buyDiv.innerHTML = "";
 	buyDiv.innerHTML += isBuyinghtml;
+
+
 	buyOrders.forEach(function (buyOrder) {
+		var bought;
+		transactions.forEach(function (transaction) {
+			if(buyOrder._id === transaction.orderID && buyOrder.buyer === currUser._id) {
+				console.log("Found a transaction attached to this buy order!");
+				bought = true;
+				console.log(buyOrder);
+				console.log(transaction);
+				return;
+			} 
+			return;
+		});
+
 		if (buyOrder.buyer === currUser._id) {
 			var thisBook, thisOrder;
 
@@ -306,7 +359,11 @@ function populateOrders() {
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
+			if (bought) {
+				price.innerHTML = "BOUGHT";
+			} else {
+				price.innerHTML = "$" + thisOrder.price;
+			}
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -318,7 +375,6 @@ function populateOrders() {
 			});
 		}
 	});
-
 	var newSellOrder = $('<button id="sellOrder" class="newBook" href="" onclick="createNewSellOrder()">+ Add New</button>')
 	newSellOrder.appendTo(sellDiv);
 	var newBuyOrder = $('<button id="buyOrder" class="newBook" href="" onclick="createNewBuyOrder()">+ Add New</button>')
