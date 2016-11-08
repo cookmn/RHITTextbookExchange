@@ -3,10 +3,10 @@ var userSchema  = new mongoose.Schema({
     firstName: String,
     lastName: String,
     image: String,
-    rating: Number,
+    rating: [Number],
     emailAddress: String,
-    favoritedBuyOrders: [Number],
-    favoritedSellOrders: [Number],
+    favoritedBuyOrders: [String],
+    favoritedSellOrders: [String],
     year: String,
     major: String,
     buyHistory: [Number],   //buy order ids

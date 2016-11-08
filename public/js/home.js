@@ -178,16 +178,12 @@
 				}
 				return;
 			});
-
-			console.log(img, thisBook, thisOrder, thisUser);
     		stupidClosures(img, thisBook, thisOrder, thisUser);
-
 		}
 	}
 
 	function stupidClosures(img, book, order, user) {
 		img.addEventListener("click", function () {
-			console.log(book, order, user);
 			bookClickHandler(book, order, user)
 		}, false);
 
