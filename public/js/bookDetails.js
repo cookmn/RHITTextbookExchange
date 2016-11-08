@@ -73,7 +73,6 @@ function loadBook() {
         order = JSON.parse(orderToViewString);
         buyOrSell = JSON.parse(buyOrSellString);
     }
-    console.log("getting book");
 }
 
 function getBook() {
@@ -301,7 +300,6 @@ function submit() {
         order.condition = conditionInput.value;
         book.course = courseInput.value;
         order.price = priceInput.value;
-        console.log(book);
         saveBook();
         saveOrder();
     } else {

@@ -1,4 +1,10 @@
 "use strict";
+
+var apiUrl = "http://localhost:3000/";
+var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers;
+var book = new Object();
+var order = new Object();
+
 var nameDiv = document.getElementById("name");
 var firstNameNode = document.getElementById("firstNameInput");
 var nameText = nameDiv.appendChild(document.createElement('p'));
@@ -32,11 +38,6 @@ var imageNode = document.getElementById("imageInput");
 var ratingNode = document.getElementById("ratingInput");
 var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
-
-var apiUrl = "http://localhost:3000/";
-var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook;
-var book = new Object();
-var order = new Object();
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
@@ -91,12 +92,12 @@ function drawBooks() {
 		html += "<div><img src=" + buying[i].image + "></img></div></div></br>";
 
 		buyingdiv.innerHTML += html;
-
 	}
 }
 
 function setup() {
-	getCurrentUser();
+	getAllUsers();
+	setTimeout( function() { getCurrentUser() }, 300);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
@@ -104,20 +105,18 @@ function setup() {
 	if (isYourProfile) {
 		editProfileButton.innerHTML = "Edit Profile";
 	}
-	setTimeout(function () { populateOrders() }, 300);
+	setTimeout(function () { populateOrders() }, 800);
 }
 
-function getCurrentUser() {
-	//hard-coded user selection for now
+function getAllUsers() {
 	$.ajax({
-		url: apiUrl + "users/5817ff5bf083f3263065d756",
+		url: apiUrl + "users/",
 		type: 'GET',
 		dataType: 'JSON',
 		success: function (data) {
 			if (data) {
-				currUser = data;
-				currUserID = currUser._id;
-				// console.log(currUser);
+				allUsers = data;
+				console.log(allUsers);
 			} else {
 				console.log("User info could not get got");
 			}
@@ -125,8 +124,72 @@ function getCurrentUser() {
 		error: function (req, status, err) {
 			console.log(err, status, req);
 		}
-	})
+	});
 }
+
+function getCurrentUser() {
+    var error = false;
+    var userToViewString;
+	var tempUser;
+    try {
+        userToViewString = sessionStorage.getItem("userData");
+    } catch (e) {
+        alert("Error when reading from Session Storage " + e);
+        error = true;
+        window.location = "home.html";
+        return false;
+    }
+    if (!error) {
+        tempUser = JSON.parse(userToViewString);
+		console.log(tempUser);
+    }
+
+	allUsers.forEach( function (user) {
+		if (user.emailAddress === tempUser.email) {
+			console.log("match");
+			currUser = user;
+			return;
+		}
+	});
+
+	console.log("curr: ");
+	console.log(currUser);
+
+	if (!currUser) {
+		addUser(tempUser);
+	}
+}
+
+function addUser(tempUser) {
+	var newUser = 
+		{
+			'firstName': tempUser.name.split(" ")[0],
+			'lastName': tempUser.name.split(" ")[1],
+			'emailAddress': tempUser.email,
+			'year': 2016,
+			'major': 'Undeclared',
+			'rating': 0
+		};
+
+	$.ajax({
+		url: apiUrl + "users/",
+		type: 'POST',
+		dataType: 'JSON',
+		data: newUser,
+		success: function (data) {
+			if (data) {
+				currUser = data;
+				console.log("success");
+			} else {
+				console.log("User info could not be posted");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+}
+
 
 function getBuyOrders() {
 	$.ajax({
@@ -182,8 +245,6 @@ function getSellOrders() {
 	});
 }
 
-
-
 function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
@@ -198,7 +259,7 @@ function populateOrders() {
 	
 	var info = document.getElementById("info");
 
-	info.innerHTML = html;
+	info.innerHTML += html;
 
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
@@ -214,7 +275,6 @@ function populateOrders() {
 			}
 			return;
 		});
-
 
 		var bookDiv = sellDiv.appendChild(document.createElement('div'));
 
@@ -254,9 +314,7 @@ function populateOrders() {
 			return;
 		});
 
-
 		var bookDiv = buyDiv.appendChild(document.createElement('div'));
-
 		var textDiv = bookDiv.appendChild(document.createElement('div'));
 
 		var title = document.createElement('p');
@@ -540,17 +598,6 @@ function inputBookInfo() {
 }
 
 function closeModal() {
-    var modal = document.getElementById('bookInfoModal');
-    modal.style.display = "none";
-    authorsNode.removeChild(authorsNode.firstChild);
-    ISBNNode.removeChild(ISBNNode.firstChild);
-    conditionNode.removeChild(conditionNode.firstChild);
-    courseNode.removeChild(courseNode.firstChild);
-    subjectNode.removeChild(subjectNode.firstChild);
-    priceNode.removeChild(priceNode.firstChild);
-    titleNode.removeChild(titleNode.firstChild);
-    commentsNode.removeChild(commentsNode.firstChild);
-
 	book.title = titleInput.value;
 	book.ISBN = ISBNInput.value;
 	book.authors = authorsInput.value;
