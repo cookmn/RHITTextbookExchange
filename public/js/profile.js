@@ -34,27 +34,56 @@ var isYourProfile = true;
 var editProfileButton = document.getElementById("editProfile");
 
 var apiUrl = "http://localhost:3000/";
-var books, currUser, buyOrders, sellOrders, currUserID;
+var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook;
+var book = new Object();
+var order = new Object();
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
 
+var title = document.getElementById("title");
+var titleText = title.appendChild(document.createElement('p'));
+var titleNode = document.getElementById("titleInput");
+var titleInput = document.createElement("textarea");
+
+var authorsNode = document.getElementById("authorsInput");
+var authorsInput = document.createElement("textarea");
+
+var ISBNNode = document.getElementById("ISBNInput");
+var ISBNInput = document.createElement("textarea");
+
+var conditionNode = document.getElementById("conditionInput");
+var conditionInput = document.createElement("textarea");
+
+var courseNode = document.getElementById("courseInput");
+var courseInput = document.createElement("textarea");
+
+var subjectNode = document.getElementById("subjectInput");
+var subjectInput = document.createElement("textarea");
+
+var priceNode = document.getElementById("priceInput");
+var priceInput = document.createElement("textarea");
+
+var commentsNode = document.getElementById("commentsInput");
+var commentsInput = document.createElement("textarea");
+var sellingdiv = document.getElementById('selling');
+var buyingdiv = document.getElementById("buying");
+
 $(document).ready(function () {
 	setup();
+	drawBooks();
+});
 
-
-
-	var sellingdiv = document.getElementById('selling');
+function drawBooks() {
+	sellingdiv.innerHTML = "";
+	buyingdiv.innerHTML = "";
 	sellingdiv.innerHTML += isSellinghtml;
-	console.log(sellingdiv);
 	for (var i = 0; i < selling.length; i++) {
 		var html = "<div><div><p>" + selling[i].title + "</p>";
 		html += "<p>" + selling[i].price + "</p></div>";
 		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
 		sellingdiv.innerHTML += html;
 	}
-	var buyingdiv = document.getElementById('buying');
-	console.log(buyingdiv);
 	buyingdiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buying.length; i++) {
 		var html = "<div><div><p>" + buying[i].title + "</p>";
@@ -64,7 +93,7 @@ $(document).ready(function () {
 		buyingdiv.innerHTML += html;
 
 	}
-});
+}
 
 function setup() {
 	getCurrentUser();
@@ -159,7 +188,6 @@ function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 
-	// var html = "<div id='img'><img id='profilePic' src=" + currUser.profilePicture + "></img></div>";
 	var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
 	html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
@@ -167,12 +195,13 @@ function populateOrders() {
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
 	html += "<p>Rating: " + currUser.rating + "/5</p>";
 	html += "</div>";
-	// console.log(searchdiv);
+	
 	var info = document.getElementById("info");
 
-	info.innerHTML += html;
+	info.innerHTML = html;
 
 	var sellDiv = document.getElementById('selling');
+	sellDiv.innerHTML = "";
 	sellDiv.innerHTML += isSellinghtml;
 	for (var i = 0; i < sellOrders.length; i++) {
 		var thisBook, thisOrder;
@@ -203,16 +232,6 @@ function populateOrders() {
 		img.setAttribute('src', 'images/textbookcover.jpg');
 		img.setAttribute('id', 'sell-image' + i);
 		imgDiv.appendChild(img);
-
-		// users.forEach(function (user) {
-		// 	if (user._id === thisOrder.seller) {
-		// 		thisUser = user;
-		// 		return;
-		// 	}
-		// 	return;
-		// });
-
-		console.log(img, thisBook, thisOrder, currUser);
 		stupidClosures(img, thisBook, thisOrder, currUser);
 
 	}
@@ -221,6 +240,7 @@ function populateOrders() {
 
 
 	var buyDiv = document.getElementById('buying');
+	buyDiv.innerHTML = "";
 	buyDiv.innerHTML += isBuyinghtml;
 	for (var i = 0; i < buyOrders.length; i++) {
 		var thisBook, thisOrder;
@@ -251,31 +271,16 @@ function populateOrders() {
 		img.setAttribute('src', 'images/textbookcover.jpg');
 		img.setAttribute('id', 'buy-image' + i);
 		imgDiv.appendChild(img);
-
-		// users.forEach(function (user) {
-		// 	if (user._id === thisOrder.buyer) {
-		// 		thisUser = user;
-		// 		return;
-		// 	}
-		// 	return;
-		// });
-
-		console.log(img, thisBook, thisOrder, currUser);
+		// console.log(img, thisBook, thisOrder, currUser);	
 		stupidClosures(img, thisBook, thisOrder, currUser);
-		// }
 
 	}
 
-	var addNewButton = "<button class='newBook' href=''>+ Add New</button>";
-	sellDiv.innerHTML += addNewButton;
-	buyDiv.innerHTML += addNewButton;
-	// function setup() {
-
-	// }
+	sellDiv.innerHTML += "<button id='buyOrder' class='newBook' href='' onclick='createNewSellOrder()'>+ Add New</button>";
+	buyDiv.innerHTML += "<button id='sellOrder' class='newBook' href='' onclick='createNewBuyOrder()'>+ Add New</button>";
 
 	function stupidClosures(img, book, order, user) {
 		img.addEventListener("click", function () {
-			console.log(book, order, user);
 			bookClickHandler(book, order, user)
 		}, false);
 	}
@@ -322,27 +327,14 @@ function submit() {
 		});
 
 	}
-	closeModal();
+	closeModal(buyOrSell);
 }
 
 function closeRatingModal() {
-	console.log("closing modal");
 	var modal = document.getElementById('ratingModal');
 	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
 }
-
-function closeModal() {
-	var modal = document.getElementById('myModal');
-	modal.style.display = "none";
-	firstNameNode.removeChild(firstNameNode.firstChild);
-	lastNameNode.removeChild(lastNameNode.firstChild);
-	imageNode.removeChild(imageNode.firstChild);
-	yearNode.removeChild(yearNode.firstChild);
-	majorNode.removeChild(majorNode.firstChild);
-}
-
-
 
 // Load book from browser session storage
 function loadProfile() {
@@ -411,6 +403,162 @@ function saveProfile() {
 	return;
 }
 
+function createNewSellOrder() {
+	buyOrSell = "sell";
+	inputBookInfo();
+}
+
+function createNewBuyOrder() {
+	buyOrSell = "buy";
+	inputBookInfo();
+}
+
+function createBook() {
+    $.ajax({
+        url: apiUrl + "books/",
+        type: 'POST',
+        data: book,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+				createdBook = data;
+				order.condition = conditionInput.value;
+				order.price = priceInput.value;
+				order.textbook = createdBook._id;
+				var currentDate = new Date();
+				order.datePosted = currentDate.toDateString();
+				order.description = commentsInput.value;
+				order.favoritedCount = "0";
+				if (buyOrSell == "sell") {
+					order.seller = currUserID;
+					createSellOrder();
+				} else {
+					order.buyer = currUserID;
+					createBuyOrder();
+				}
+            } else {
+                console.log("Book could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function createSellOrder() {
+    $.ajax({
+        url: apiUrl + "sellOrders/",
+        type: 'POST',
+        data: order,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+				sellOrders.push(data);
+				location.reload();
+            } else {
+                console.log("Book could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function createBuyOrder() {
+	console.log("creating buy order");
+    $.ajax({
+        url: apiUrl + "buyOrders/",
+        type: 'POST',
+        data: order,
+        dataType: 'JSON',
+        success: function (data) {
+            if (data) {
+				buyOrders.push(data);
+				location.reload();
+            } else {
+                console.log("Buy order could not be created");
+            }
+        },
+        error: function (req, status, err) {
+            console.log(err, status, req);
+        }
+    });
+    return;
+}
+
+function inputBookInfo() {
+	var modal = document.getElementById('bookInfoModal');
+	var span = document.getElementsByClassName("close")[0];
+
+	titleInput.setAttribute("rows", "1");
+	titleInput.setAttribute("cols", "30");
+
+	authorsInput.setAttribute("rows", "1");
+	authorsInput.setAttribute("cols", "30");
+
+	ISBNInput.setAttribute("rows", "1");
+	ISBNInput.setAttribute("cols", "30");
+
+	conditionInput.setAttribute("rows", "1");
+	conditionInput.setAttribute("cols", "30");
+
+	courseInput.setAttribute("rows", "1");
+	courseInput.setAttribute("cols", "30");
+
+	subjectInput.setAttribute("rows", "1");
+	subjectInput.setAttribute("cols", "30");
+
+	priceInput.setAttribute("rows", "1");
+	priceInput.setAttribute("cols", "30");
+
+	commentsInput.setAttribute("rows", "1");
+	commentsInput.setAttribute("cols", "30");
+
+	titleNode.appendChild(titleInput);
+	authorsNode.appendChild(authorsInput);
+	ISBNNode.appendChild(ISBNInput);
+	conditionNode.appendChild(conditionInput);
+	courseNode.appendChild(courseInput);
+	subjectNode.appendChild(subjectInput);
+	priceNode.appendChild(priceInput);
+	commentsNode.appendChild(commentsInput);
+
+	modal.style.display = "block";
+	span.onclick = function () {
+		closeModal();
+	}
+
+	window.onclick = function (event) {
+		if (event.target == modal) {
+			closeModal();
+		}
+	}
+}
+
+function closeModal() {
+    var modal = document.getElementById('bookInfoModal');
+    modal.style.display = "none";
+    authorsNode.removeChild(authorsNode.firstChild);
+    ISBNNode.removeChild(ISBNNode.firstChild);
+    conditionNode.removeChild(conditionNode.firstChild);
+    courseNode.removeChild(courseNode.firstChild);
+    subjectNode.removeChild(subjectNode.firstChild);
+    priceNode.removeChild(priceNode.firstChild);
+    titleNode.removeChild(titleNode.firstChild);
+    commentsNode.removeChild(commentsNode.firstChild);
+
+	book.title = titleInput.value;
+	book.ISBN = ISBNInput.value;
+	book.authors = authorsInput.value;
+	book.subject = subjectInput.value;
+	book.course = courseInput.value;
+	createBook();
+}
+
 function loadImage(imagePath) {
 	image.setAttribute('src', imagePath);
 }
@@ -422,8 +570,6 @@ function editProfile() {
 
 		firstNameInput.setAttribute("rows", "1");
 		firstNameInput.setAttribute("cols", "30");
-		console.log("profile is: ");
-		console.log(currUser);
 		firstNameInput.innerHTML = currUser.firstName;
 
 		lastNameInput.setAttribute("rows", "1");
@@ -456,7 +602,6 @@ function editProfile() {
 		}
 		window.onclick = function (event) {
 			if (event.target == modal) {
-				console.log("this is where i am");
 				if (isYourProfile) {
 					closeModal();
 				} else {
