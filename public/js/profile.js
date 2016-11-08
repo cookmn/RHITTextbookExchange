@@ -76,7 +76,7 @@ $(document).ready(function () {
 
 function setup() {
 	getAllUsers();
-	setTimeout(function () { getCurrentUser() }, 300);
+	setTimeout(function () { getCurrentUser() }, 100);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
@@ -84,7 +84,7 @@ function setup() {
 	if (isYourProfile) {
 		editProfileButton.innerHTML = "Edit Profile";
 	}
-	setTimeout(function () { populateOrders() }, 800);
+	setTimeout(function () { populateOrders() }, 100);
 }
 
 function getAllUsers() {
@@ -253,7 +253,14 @@ function populateOrders() {
 
 			var bookDiv = sellDiv.appendChild(document.createElement('div'));
 			var textDiv = bookDiv.appendChild(document.createElement('div'));
-			
+
+			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
+				var deleteButton = document.createElement('button');
+				deleteButton.innerHTML = "Delete Order";
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder)}, false);
+				textDiv.appendChild(deleteButton);
+			}
+
 			var title = document.createElement('p');
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
@@ -290,6 +297,13 @@ function populateOrders() {
 			var bookDiv = buyDiv.appendChild(document.createElement('div'));
 			var textDiv = bookDiv.appendChild(document.createElement('div'));
 
+			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
+				var deleteButton = document.createElement('button');
+				deleteButton.innerHTML = "Delete Order";
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder)}, false);
+				textDiv.appendChild(deleteButton);
+			}
+
 			var title = document.createElement('p');
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
@@ -311,6 +325,37 @@ function populateOrders() {
 	newSellOrder.appendTo(sellDiv);
 	var newBuyOrder = $('<button id="buyOrder" class="newBook" href="" onclick="createNewBuyOrder()">+ Add New</button>')
 	newBuyOrder.appendTo(buyDiv);
+}
+
+function deleteBookClickHandler(order) {
+	console.log("You have entered this function");
+	console.log(order);
+	if (order.buyer) {
+		$.ajax({
+		url: apiUrl + "buyOrders/" + order._id,
+		type: 'DELETE',
+		dataType: 'JSON',
+		success: function () {
+			window.location = "profile.html";
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	} else {
+		$.ajax({
+			url: apiUrl + "sellOrders/" + order._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
+	}
+
 }
 
 function bookClickHandler(book, order, user) {
