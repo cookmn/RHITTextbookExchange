@@ -251,61 +251,111 @@ function favoriteHandler() {
 }
 
 function buyBook() {
-    var transaction = {
-        isBuy: true,
-        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
-        customerID: currentUser._id,
-        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
-    };
+    var confirmModal = document.createElement("div");
+    confirmModal.setAttribute("class", "modal");
 
-    console.log(transaction);
+    var confirmModalContent = document.createElement("div");
+    confirmModalContent.setAttribute("class", "modal-content");
 
-    $.ajax({
-        url: apiUrl + "transactions/",
-        type: 'POST',
-        data: transaction,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                console.log(data);
-            } else {
-                console.log("error posting");
+    var confirmMessage = document.createElement("p");
+    confirmMessage.innerHTML = "Are you sure you want to purhcase this book?";
+    confirmModalContent.appendChild(confirmMessage);
+
+    var confirmButton = document.createElement("button");
+    confirmButton.innerHTML = "Confirm";
+    confirmButton.addEventListener("click", function() {buy()}, false);
+    confirmModalContent.appendChild(confirmButton);
+
+    confirmModal.appendChild(confirmModalContent);
+
+    document.getElementsByTagName("body")[0].appendChild(confirmModal);
+    confirmModal.style.display = "block";
+    console.log(document.getElementsByTagName("body")[0]);
+
+    function buy() {
+        var transaction = {
+            isBuy: true,
+            orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+            customerID: currentUser._id,
+            priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+        };
+
+        console.log(transaction);
+
+        confirmModal.style.display = "none";
+
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'POST',
+            data: transaction,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    console.log(data);
+                    window.location = "selling.html"
+                } else {
+                    console.log("error posting");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
             }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
+        });
+    }
 }
 
 function sellBook() {
-    console.log("You just called sellBook()!");
 
-    var transaction = {
-        isBuy: false,
-        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
-        customerID: currentUser._id,
-        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
-    };
+    var confirmModal = document.createElement("div");
+    confirmModal.setAttribute("class", "modal");
 
-    console.log(transaction);
+    var confirmModalContent = document.createElement("div");
+    confirmModalContent.setAttribute("class", "modal-content");
 
-    $.ajax({
-        url: apiUrl + "transactions/",
-        type: 'POST',
-        data: transaction,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                console.log(data);
-            } else {
-                console.log("error posting");
+    var confirmMessage = document.createElement("p");
+    confirmMessage.innerHTML = "Are you sure you want to sell this book?";
+    confirmModalContent.appendChild(confirmMessage);
+
+    var confirmButton = document.createElement("button");
+    confirmButton.innerHTML = "Confirm";
+    confirmButton.addEventListener("click", function() {sell()}, false);
+    confirmModalContent.appendChild(confirmButton);
+
+    confirmModal.appendChild(confirmModalContent);
+
+    document.getElementsByTagName("body")[0].appendChild(confirmModal);
+    confirmModal.style.display = "block";
+    console.log(document.getElementsByTagName("body")[0]);
+
+    function sell() {
+        var transaction = {
+            isBuy: false,
+            orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+            customerID: currentUser._id,
+            priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+        };
+
+        console.log(transaction);
+
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'POST',
+            data: transaction,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    console.log(data);
+                    window.location = "buying.html";
+                } else {
+                    console.log("error posting");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
             }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });    
+        });    
+        
+    }
 }
 
 function editBook() {
