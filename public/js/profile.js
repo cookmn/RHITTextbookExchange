@@ -90,7 +90,6 @@ function getAllUsers() {
 		success: function (data) {
 			if (data) {
 				allUsers = data;
-				console.log(allUsers);
 			} else {
 				console.log("User info could not get got");
 			}

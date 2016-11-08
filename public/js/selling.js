@@ -71,7 +71,6 @@
     function displayBooks(booksToDisplay) {
         var listDiv = document.getElementById("book-list");
         listDiv.innerHTML = "";
-        console.log(booksToDisplay);
         sellOrders.forEach(function (order) {
             var thisOrder;
             var thisSeller;
@@ -231,7 +230,6 @@
     }
 
     $(window).on('load', function () {
-        //load in initial state
         setup();
     })
 

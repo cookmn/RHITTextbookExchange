@@ -75,7 +75,6 @@ app.use(function(err, req, res, next) {
 });
 
 app.post('/foobar', function (req, res) {
-  console.log("i am here");
   var token = req.body.token;
   if (!token) {
     res.status(401).json({

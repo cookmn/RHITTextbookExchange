@@ -58,6 +58,7 @@
             success: function (data) {
                 if (data) {
                     buyers = data;
+                    console.log("got buyers");
                 } else {
                     console.log("User info could not get got");
                 }
@@ -165,7 +166,6 @@
 
         sortBySubject.on('input', function() {
             subjectString = $(this).val();
-            console.log(subjectString);
             filterBooksBySubject(subjectString);
         })
 
