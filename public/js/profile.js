@@ -695,24 +695,6 @@ function editProfile() {
 			}
 		}
 	} else {
-		var modal = document.getElementById('ratingModal');
-		var span = document.getElementsByClassName("close")[1];
 
-		var ratingInput = document.createElement("textarea");
-		ratingInput.setAttribute("rows", "1");
-		ratingInput.setAttribute("cols", "30");
-		ratingInput.innerHTML = "1";
-
-		ratingNode.appendChild(ratingInput);
-
-		modal.style.display = "block";
-		span.onclick = function () {
-			closeRatingModal();
-		}
-		window.onclick = function (event) {
-			if (event.target == modal) {
-				closeRatingModal();
-			}
-		}
 	}
 }
