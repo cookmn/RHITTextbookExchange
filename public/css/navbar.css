@@ -19,7 +19,7 @@ ol.nav li {
     border-right: 1px solid #C1C7C9;
 }
 
-ol.nav li#rightli {
+ol.nav li.rightli {
     float: right;
     border-right: none;
     border-left: 1px solid #C1C7C9;
