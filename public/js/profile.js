@@ -637,8 +637,8 @@ function closeBookModal() {
 
 function closeEditModal() {
 	var modal = document.getElementById("myModal");
-	console.log(modal);
 	modal.style.display = "none";
+	location.reload();
 }
 
 
