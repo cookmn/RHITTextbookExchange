@@ -257,7 +257,7 @@ function populateOrders() {
 			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
 				var deleteButton = document.createElement('button');
 				deleteButton.innerHTML = "Delete Order";
-				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder)}, false);
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
 				textDiv.appendChild(deleteButton);
 			}
 
@@ -300,7 +300,7 @@ function populateOrders() {
 			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
 				var deleteButton = document.createElement('button');
 				deleteButton.innerHTML = "Delete Order";
-				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder)}, false);
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
 				textDiv.appendChild(deleteButton);
 			}
 
@@ -327,7 +327,7 @@ function populateOrders() {
 	newBuyOrder.appendTo(buyDiv);
 }
 
-function deleteBookClickHandler(order) {
+function deleteBookClickHandler(order, book) {
 	console.log("You have entered this function");
 	console.log(order);
 	if (order.buyer) {
@@ -336,7 +336,7 @@ function deleteBookClickHandler(order) {
 		type: 'DELETE',
 		dataType: 'JSON',
 		success: function () {
-			window.location = "profile.html";
+			// window.location = "profile.html";
 		},
 		error: function (req, status, err) {
 			console.log(err, status, req);
@@ -348,13 +348,25 @@ function deleteBookClickHandler(order) {
 			type: 'DELETE',
 			dataType: 'JSON',
 			success: function () {
-				window.location = "profile.html";
+				// window.location = "profile.html";
 			},
 			error: function (req, status, err) {
 				console.log(err, status, req);
 			}
 		});
 	}
+
+	$.ajax({
+			url: apiUrl + "books/" + book._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
 
 }
 
