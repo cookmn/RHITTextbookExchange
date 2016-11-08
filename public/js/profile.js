@@ -72,32 +72,11 @@ var buyingdiv = document.getElementById("buying");
 
 $(document).ready(function () {
 	setup();
-	drawBooks();
 });
-
-function drawBooks() {
-	sellingdiv.innerHTML = "";
-	buyingdiv.innerHTML = "";
-	sellingdiv.innerHTML += isSellinghtml;
-	for (var i = 0; i < selling.length; i++) {
-		var html = "<div><div><p>" + selling[i].title + "</p>";
-		html += "<p>" + selling[i].price + "</p></div>";
-		html += "<div><img src=" + selling[i].image + "></img></div></div></br>";
-		sellingdiv.innerHTML += html;
-	}
-	buyingdiv.innerHTML += isBuyinghtml;
-	for (var i = 0; i < buying.length; i++) {
-		var html = "<div><div><p>" + buying[i].title + "</p>";
-		html += "<p>" + buying[i].price + "</p></div>";
-		html += "<div><img src=" + buying[i].image + "></img></div></div></br>";
-
-		buyingdiv.innerHTML += html;
-	}
-}
 
 function setup() {
 	getAllUsers();
-	setTimeout( function() { getCurrentUser() }, 300);
+	setTimeout(function () { getCurrentUser() }, 300);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
@@ -128,32 +107,28 @@ function getAllUsers() {
 }
 
 function getCurrentUser() {
-    var error = false;
-    var userToViewString;
+	var error = false;
+	var userToViewString;
 	var tempUser;
-    try {
-        userToViewString = sessionStorage.getItem("userData");
-    } catch (e) {
-        alert("Error when reading from Session Storage " + e);
-        error = true;
-        window.location = "home.html";
-        return false;
-    }
-    if (!error) {
-        tempUser = JSON.parse(userToViewString);
+	try {
+		userToViewString = sessionStorage.getItem("userData");
+	} catch (e) {
+		alert("Error when reading from Session Storage " + e);
+		error = true;
+		window.location = "home.html";
+		return false;
+	}
+	if (!error) {
+		tempUser = JSON.parse(userToViewString);
 		console.log(tempUser);
-    }
+	}
 
-	allUsers.forEach( function (user) {
+	allUsers.forEach(function (user) {
 		if (user.emailAddress === tempUser.email) {
-			console.log("match");
 			currUser = user;
 			return;
 		}
 	});
-
-	console.log("curr: ");
-	console.log(currUser);
 
 	if (!currUser) {
 		addUser(tempUser);
@@ -161,7 +136,7 @@ function getCurrentUser() {
 }
 
 function addUser(tempUser) {
-	var newUser = 
+	var newUser =
 		{
 			'firstName': tempUser.name.split(" ")[0],
 			'lastName': tempUser.name.split(" ")[1],
@@ -189,7 +164,6 @@ function addUser(tempUser) {
 		}
 	});
 }
-
 
 function getBuyOrders() {
 	$.ajax({
@@ -256,7 +230,7 @@ function populateOrders() {
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
 	html += "<p>Rating: " + currUser.rating + "/5</p>";
 	html += "</div>";
-	
+
 	var info = document.getElementById("info");
 
 	info.innerHTML += html;
@@ -264,108 +238,102 @@ function populateOrders() {
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
 	sellDiv.innerHTML += isSellinghtml;
-	for (var i = 0; i < sellOrders.length; i++) {
-		var thisBook, thisOrder;
+	sellOrders.forEach(function (sellOrder) {
+		if (sellOrder.seller === currUser._id) {
+			var thisBook, thisOrder;
 
-		books.forEach(function (book) {
-			if (sellOrders[i].textbook === book._id) {
-				thisOrder = sellOrders[i];
-				thisBook = book;
+			books.forEach(function (book) {
+				if (sellOrder.textbook === book._id) {
+					thisOrder = sellOrder;
+					thisBook = book;
+					return;
+				}
 				return;
-			}
-			return;
-		});
+			});
 
-		var bookDiv = sellDiv.appendChild(document.createElement('div'));
+			var bookDiv = sellDiv.appendChild(document.createElement('div'));
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
+			
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
 
-		var textDiv = bookDiv.appendChild(document.createElement('div'));
-
-		var title = document.createElement('p');
-		title.innerHTML = thisBook.title;
-		textDiv.appendChild(title);
-		var price = document.createElement('p');
-		price.innerHTML = "$" + thisOrder.price;
-		textDiv.appendChild(price);
-
-		var imgDiv = bookDiv.appendChild(document.createElement('div'));
-		var img = document.createElement('img');
-		img.setAttribute('src', 'images/textbookcover.jpg');
-		img.setAttribute('id', 'sell-image' + i);
-		imgDiv.appendChild(img);
-		stupidClosures(img, thisBook, thisOrder, currUser);
-
-	}
-
-	// ----------------------------------------------------------------------------------------------
-
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = $('<img class="sell-image">');
+			img.attr('src', 'images/textbookcover.jpg');
+			img.appendTo(imgDiv);
+			img.click( function () {
+				bookClickHandler(thisBook, thisOrder, currUser);
+			});
+		}
+	});
 
 	var buyDiv = document.getElementById('buying');
 	buyDiv.innerHTML = "";
 	buyDiv.innerHTML += isBuyinghtml;
-	for (var i = 0; i < buyOrders.length; i++) {
-		var thisBook, thisOrder;
+	buyOrders.forEach(function (buyOrder) {
+		if (buyOrder.buyer === currUser._id) {
+			var thisBook, thisOrder;
 
-		books.forEach(function (book) {
-			if (buyOrders[i].textbook === book._id) {
-				thisOrder = buyOrders[i];
-				thisBook = book;
+			books.forEach(function (book) {
+				if (buyOrder.textbook === book._id) {
+					thisOrder = buyOrder;
+					thisBook = book;
+					return;
+				}
 				return;
-			}
-			return;
-		});
+			});
 
-		var bookDiv = buyDiv.appendChild(document.createElement('div'));
-		var textDiv = bookDiv.appendChild(document.createElement('div'));
+			var bookDiv = buyDiv.appendChild(document.createElement('div'));
+			var textDiv = bookDiv.appendChild(document.createElement('div'));
 
-		var title = document.createElement('p');
-		title.innerHTML = thisBook.title;
-		textDiv.appendChild(title);
-		var price = document.createElement('p');
-		price.innerHTML = "$" + thisOrder.price;
-		textDiv.appendChild(price);
+			var title = document.createElement('p');
+			title.innerHTML = thisBook.title;
+			textDiv.appendChild(title);
+			var price = document.createElement('p');
+			price.innerHTML = "$" + thisOrder.price;
+			textDiv.appendChild(price);
 
-		var imgDiv = bookDiv.appendChild(document.createElement('div'));
-		var img = document.createElement('img');
-		img.setAttribute('src', 'images/textbookcover.jpg');
-		img.setAttribute('id', 'buy-image' + i);
-		imgDiv.appendChild(img);
-		// console.log(img, thisBook, thisOrder, currUser);	
-		stupidClosures(img, thisBook, thisOrder, currUser);
-
-	}
-
-	sellDiv.innerHTML += "<button id='buyOrder' class='newBook' href='' onclick='createNewSellOrder()'>+ Add New</button>";
-	buyDiv.innerHTML += "<button id='sellOrder' class='newBook' href='' onclick='createNewBuyOrder()'>+ Add New</button>";
-
-	function stupidClosures(img, book, order, user) {
-		img.addEventListener("click", function () {
-			bookClickHandler(book, order, user)
-		}, false);
-	}
-
-	function bookClickHandler(book, order, user) {
-		var error = false;
-
-		try {
-			// serialize it into a string
-			var bookToViewString = JSON.stringify(book);
-			sessionStorage.setItem("bookToView", bookToViewString);
-
-			var orderToViewString = JSON.stringify(order);
-			sessionStorage.setItem("orderToView", orderToViewString);
-
-			var userToViewString = JSON.stringify(user);
-			sessionStorage.setItem("userToView", userToViewString);
-		} catch (e) {
-			alert("Error when writing to Session Storage " + e);
-			error = true;
+			var imgDiv = bookDiv.appendChild(document.createElement('div'));
+			var img = $('<img class="sell-image">');
+			img.attr('src', 'images/textbookcover.jpg');
+			img.appendTo(imgDiv);
+			img.click( function () {
+				bookClickHandler(thisBook, thisOrder, currUser);
+			});
 		}
-		if (!error) {
-			window.location = "bookDetails.html";
-			return false;
-		}
-	}
+	});
 
+	var newSellOrder = $('<button id="sellOrder" class="newBook" href="" onclick="createNewSellOrder()">+ Add New</button>')
+	newSellOrder.appendTo(sellDiv);
+	var newBuyOrder = $('<button id="buyOrder" class="newBook" href="" onclick="createNewBuyOrder()">+ Add New</button>')
+	newBuyOrder.appendTo(buyDiv);
+}
+
+function bookClickHandler(book, order, user) {
+	var error = false;
+
+	try {
+		// serialize it into a string
+		var bookToViewString = JSON.stringify(book);
+		sessionStorage.setItem("bookToView", bookToViewString);
+
+		var orderToViewString = JSON.stringify(order);
+		sessionStorage.setItem("orderToView", orderToViewString);
+
+		var userToViewString = JSON.stringify(user);
+		sessionStorage.setItem("userToView", userToViewString);
+	} catch (e) {
+		alert("Error when writing to Session Storage " + e);
+		error = true;
+	}
+	if (!error) {
+		window.location = "bookDetails.html";
+		return false;
+	}
 }
 
 function submit() {
@@ -378,12 +346,10 @@ function submit() {
 		saveProfile();
 		loadImage(currUser.image);
 	} else {
-
-		$(window).on('load', function () {
+		$(document).ready(function () {
 			//load in initial state
 			setup();
 		});
-
 	}
 	closeModal(buyOrSell);
 }
@@ -437,7 +403,7 @@ function getProfiles() {
 		error: function (req, status, err) {
 			console.log(err, status, req);
 		}
-	})
+	});
 }
 
 function saveProfile() {
@@ -472,13 +438,13 @@ function createNewBuyOrder() {
 }
 
 function createBook() {
-    $.ajax({
-        url: apiUrl + "books/",
-        type: 'POST',
-        data: book,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
+	$.ajax({
+		url: apiUrl + "books/",
+		type: 'POST',
+		data: book,
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
 				createdBook = data;
 				order.condition = conditionInput.value;
 				order.price = priceInput.value;
@@ -488,69 +454,69 @@ function createBook() {
 				order.description = commentsInput.value;
 				order.favoritedCount = "0";
 				if (buyOrSell == "sell") {
-					order.seller = currUserID;
+					order.seller = currUser._id;
 					createSellOrder();
 				} else {
-					order.buyer = currUserID;
+					order.buyer = currUser._id;
 					createBuyOrder();
 				}
-            } else {
-                console.log("Book could not be created");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
-    return;
+			} else {
+				console.log("Book could not be created");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	return;
 }
 
 function createSellOrder() {
-    $.ajax({
-        url: apiUrl + "sellOrders/",
-        type: 'POST',
-        data: order,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
+	$.ajax({
+		url: apiUrl + "sellOrders/",
+		type: 'POST',
+		data: order,
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
 				sellOrders.push(data);
 				location.reload();
-            } else {
-                console.log("Book could not be created");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
-    return;
+			} else {
+				console.log("Book could not be created");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	return;
 }
 
 function createBuyOrder() {
 	console.log("creating buy order");
-    $.ajax({
-        url: apiUrl + "buyOrders/",
-        type: 'POST',
-        data: order,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
+	$.ajax({
+		url: apiUrl + "buyOrders/",
+		type: 'POST',
+		data: order,
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
 				buyOrders.push(data);
 				location.reload();
-            } else {
-                console.log("Buy order could not be created");
-            }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
-    return;
+			} else {
+				console.log("Buy order could not be created");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	return;
 }
 
 function inputBookInfo() {
 	var modal = document.getElementById('bookInfoModal');
-	var span = document.getElementsByClassName("close")[0];
+	var span = document.getElementsByClassName("close")[2];
 
 	titleInput.setAttribute("rows", "1");
 	titleInput.setAttribute("cols", "30");
@@ -585,14 +551,17 @@ function inputBookInfo() {
 	priceNode.appendChild(priceInput);
 	commentsNode.appendChild(commentsInput);
 
+	var submitBook = document.getElementById("submit-book");
+	submitBook.addEventListener("click", closeModal);
+
 	modal.style.display = "block";
 	span.onclick = function () {
-		closeModal();
+		closeBookModal();
 	}
 
 	window.onclick = function (event) {
 		if (event.target == modal) {
-			closeModal();
+			closeBookModal();
 		}
 	}
 }
@@ -605,6 +574,18 @@ function closeModal() {
 	book.course = courseInput.value;
 	createBook();
 }
+
+function closeBookModal() {
+	var modal = document.getElementById("bookInfoModal");
+	modal.style.display = "none";
+}
+
+function closeEditModal() {
+	var modal = document.getElementById("myModal");
+	console.log(modal);
+	modal.style.display = "none";
+}
+
 
 function loadImage(imagePath) {
 	image.setAttribute('src', imagePath);
@@ -644,13 +625,13 @@ function editProfile() {
 
 		modal.style.display = "block";
 		span.onclick = function () {
-			closeModal();
+			closeEditModal();
 
 		}
 		window.onclick = function (event) {
 			if (event.target == modal) {
 				if (isYourProfile) {
-					closeModal();
+					closeEditModal();
 				} else {
 					closeRatingModal();
 				}
