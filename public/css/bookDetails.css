@@ -55,7 +55,7 @@ body {
     clear: both;
 }
 
-#editBook{
+#buySellEdit, #favorite{
     float: right;
 }
 
