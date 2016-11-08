@@ -17,11 +17,9 @@ $(document).ready(function() {
             dataType: 'JSON',
             success: function (data) {
                 if(data) {
-                    //redirect to index.html
-                    //window.location.href = './homepage.html';
-                    console.log(data);
-					console.log("good stuff");
-                    //window.location.href = "./home.html";
+                    var userData = JSON.stringify(data);
+                    sessionStorage.setItem("userData", userData);
+                    window.location.href = "./home.html";
                     return false;
                 } else {
                     console.log('could not be verify rosefire');
