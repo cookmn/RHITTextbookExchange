@@ -103,7 +103,6 @@ function saveBook() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
-                loadBookInfo();
                 return false;
             } else {
                 console.log("Book info could not be updated");
@@ -129,6 +128,7 @@ function saveOrder() {
         dataType: 'JSON',
         success: function (data) {
             if (data) {
+                closeModal();
                 loadBookInfo();
                 return false;
             } else {
@@ -137,6 +137,9 @@ function saveOrder() {
         },
         error: function (req, status, err) {
             console.log(err, status, req);
+            var errorMsg = document.getElementById('error-msg');
+            errorMsg.style.color = 'red';
+            errorMsg.textContent = "Price is not a number, please enter a valid number.";
         }
     });
     return;
@@ -310,7 +313,6 @@ function closeModal() {
 }
 
 function submit() {
-    closeModal();
     if (isYourBook) {
         book.title = titleInput.value;
         book.ISBN = ISBNInput.value;
