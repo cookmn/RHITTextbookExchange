@@ -647,7 +647,6 @@ function loadImage(imagePath) {
 }
 
 function editProfile() {
-	console.log("editting profile");
 	if (isYourProfile) {
 		var modal = document.getElementById('myModal');
 		var span = document.getElementsByClassName("close")[0];
