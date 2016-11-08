@@ -144,7 +144,7 @@
             sessionStorage.setItem("orderToView", orderToViewString);
             
             var buyerToViewString = JSON.stringify(buyerToView);
-            sessionStorage.setItem("buyerToView", buyerToViewString);
+            sessionStorage.setItem("userToView", buyerToViewString);
 
             var buyString = JSON.stringify("buy");
             sessionStorage.setItem("buyOrSell", buyString);

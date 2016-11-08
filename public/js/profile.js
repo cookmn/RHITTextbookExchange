@@ -37,7 +37,6 @@ var imageNode = document.getElementById("imageInput");
 
 var ratingNode = document.getElementById("ratingInput");
 var isYourProfile = true;
-var editProfileButton = document.getElementById("editProfile");
 
 var isSellinghtml = " is selling:</p></div>";
 var isBuyinghtml = " is looking for:</p></div>";
@@ -76,14 +75,10 @@ $(document).ready(function () {
 
 function setup() {
 	getAllUsers();
-	setTimeout(function () { getCurrentUser() }, 300);
+	setTimeout(function () { getCurrentUser() }, 100);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
-	editProfileButton.innerHTML = "Rate User";
-	if (isYourProfile) {
-		editProfileButton.innerHTML = "Edit Profile";
-	}
 	setTimeout(function () { populateOrders() }, 800);
 }
 
@@ -234,6 +229,9 @@ function populateOrders() {
 	var info = document.getElementById("info");
 
 	info.innerHTML += html;
+	
+	var editProfileButton = document.getElementById("editProfile");
+	editProfileButton.addEventListener("click", editProfile);
 
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
@@ -253,7 +251,14 @@ function populateOrders() {
 
 			var bookDiv = sellDiv.appendChild(document.createElement('div'));
 			var textDiv = bookDiv.appendChild(document.createElement('div'));
-			
+
+			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
+				var deleteButton = document.createElement('button');
+				deleteButton.innerHTML = "Delete";
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
+				textDiv.appendChild(deleteButton);
+			}
+
 			var title = document.createElement('p');
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
@@ -265,7 +270,7 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click( function () {
+			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
 			});
 		}
@@ -290,6 +295,13 @@ function populateOrders() {
 			var bookDiv = buyDiv.appendChild(document.createElement('div'));
 			var textDiv = bookDiv.appendChild(document.createElement('div'));
 
+			if (JSON.parse(sessionStorage.getItem('userData')).email === currUser.emailAddress) {
+				var deleteButton = document.createElement('button');
+				deleteButton.innerHTML = "Delete";
+				deleteButton.addEventListener("click", function () {deleteBookClickHandler(thisOrder, thisBook)}, false);
+				textDiv.appendChild(deleteButton);
+			}
+
 			var title = document.createElement('p');
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
@@ -301,7 +313,7 @@ function populateOrders() {
 			var img = $('<img class="sell-image">');
 			img.attr('src', 'images/textbookcover.jpg');
 			img.appendTo(imgDiv);
-			img.click( function () {
+			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
 			});
 		}
@@ -311,6 +323,49 @@ function populateOrders() {
 	newSellOrder.appendTo(sellDiv);
 	var newBuyOrder = $('<button id="buyOrder" class="newBook" href="" onclick="createNewBuyOrder()">+ Add New</button>')
 	newBuyOrder.appendTo(buyDiv);
+}
+
+function deleteBookClickHandler(order, book) {
+	console.log("You have entered this function");
+	console.log(order);
+	if (order.buyer) {
+		$.ajax({
+		url: apiUrl + "buyOrders/" + order._id,
+		type: 'DELETE',
+		dataType: 'JSON',
+		success: function () {
+			// window.location = "profile.html";
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+	} else {
+		$.ajax({
+			url: apiUrl + "sellOrders/" + order._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				// window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
+	}
+
+	$.ajax({
+			url: apiUrl + "books/" + book._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
+
 }
 
 function bookClickHandler(book, order, user) {
@@ -351,7 +406,7 @@ function submit() {
 			setup();
 		});
 	}
-	closeModal(buyOrSell);
+	closeEditModal();
 }
 
 function closeRatingModal() {
@@ -582,8 +637,8 @@ function closeBookModal() {
 
 function closeEditModal() {
 	var modal = document.getElementById("myModal");
-	console.log(modal);
 	modal.style.display = "none";
+	location.reload();
 }
 
 
@@ -628,6 +683,9 @@ function editProfile() {
 			closeEditModal();
 
 		}
+
+		var submitButton = document.getElementById("submit");
+		submitButton.addEventListener("click", submit);
 		window.onclick = function (event) {
 			if (event.target == modal) {
 				if (isYourProfile) {

@@ -354,6 +354,9 @@ function editBook() {
         priceNode.appendChild(priceInput);
         commentsNode.appendChild(commentsInput);
 
+        var submitButton = document.getElementById("submit");
+        submitButton.addEventListener("click", submit);
+
         modal.style.display = "block";
         span.onclick = function () {
             closeModal();
@@ -400,13 +403,13 @@ function submit() {
 }
 
 $(document).ready(function () {
+    loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
     } else {
         editForm = false;
     }
     console.log(editForm);
-    loadBook();
     loadImage();
     setup();
 });
