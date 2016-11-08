@@ -402,7 +402,6 @@ function submit() {
 }
 
 $(document).ready(function () {
-
     validateUser();
 
     loadBook();
@@ -451,9 +450,6 @@ function setup() {
     }
     editBookButton.addEventListener("click", function () { functionToCall() }, false);
     favoriteButton.addEventListener("click", function () { favoriteHandler() }, false);
-    // if (isYourBook) {
-        // editBookButton.innerHTML = "Edit Book";
-    // }
 }
 
 function validateUser() {
