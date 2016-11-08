@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 	var apiUrl = "http://localhost:3000/";
-	var books, buyOrders, sellOrders, users;
+	var books, buyOrders, sellOrders, users, transactions;
 
 	function setup() {
 
@@ -9,6 +9,7 @@
 		getSellOrders();
 		getUsers();
 		getBooks();
+		getTransactions();
 		setTimeout(function () {populateOrders()}, 150);
 	}
 
@@ -87,6 +88,24 @@
     	});
 	}
 
+	function getTransactions() {
+		$.ajax({
+			url: apiUrl + "transactions/",
+			type: 'GET',
+			dataType: 'JSON',
+			success: function (data) {
+				if (data) {
+					transactions = data;
+				} else {
+					console.log("Buy order books could not get got");
+				}
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});	
+	}
+
 	function populateOrders() {
 		var buyDiv = document.getElementById('buy-search-div');
 		for(var i=0; i<5; i++) {
@@ -105,33 +124,49 @@
 				return;
 			});
 
-			
+			var bought = false;
+			transactions.forEach(function (transaction) {
 
-			var bookDiv = buyDiv.appendChild(document.createElement('div'));
-
-			var textDiv = bookDiv.appendChild(document.createElement('div'));
-			
-			var title = document.createElement('p');
-			title.innerHTML = thisBook.title;
-			textDiv.appendChild(title);
-			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
-			textDiv.appendChild(price);
-
-			var imgDiv = bookDiv.appendChild(document.createElement('div'));
-			var img = document.createElement('img');
-			img.setAttribute('src', 'images/textbookcover.jpg');
-			imgDiv.appendChild(img);
-
-			users.forEach(function (user) {
-				if (user._id === thisOrder.buyer) {
-					thisUser = user;
+				if(buyOrders[i]._id === transaction.orderID) {
+					console.log("Found a transaction attached to this buy order!");
+					bought = true;
+					console.log(buyOrders[i]);
+					console.log(transaction);
 					return;
 				}
 				return;
 			});
 
-			stupidClosures(img, thisBook, thisOrder, thisUser);
+			if (bought) {
+				//do nothing
+				// return;
+			} else {
+				var bookDiv = buyDiv.appendChild(document.createElement('div'));
+
+				var textDiv = bookDiv.appendChild(document.createElement('div'));
+				
+				var title = document.createElement('p');
+				title.innerHTML = thisBook.title;
+				textDiv.appendChild(title);
+				var price = document.createElement('p');
+				price.innerHTML = "$" + thisOrder.price;
+				textDiv.appendChild(price);
+
+				var imgDiv = bookDiv.appendChild(document.createElement('div'));
+				var img = document.createElement('img');
+				img.setAttribute('src', 'images/textbookcover.jpg');
+				imgDiv.appendChild(img);
+
+				users.forEach(function (user) {
+					if (user._id === thisOrder.buyer) {
+						thisUser = user;
+						return;
+					}
+					return;
+				});
+
+				stupidClosures(img, thisBook, thisOrder, thisUser);
+			}
 		}
 
 // ----------------------------------------------------------------------------------------------
@@ -153,32 +188,49 @@
 				return;
 			});
 
-			
+			var sell = false;
+			transactions.forEach(function (transaction) {
 
-			var bookDiv = sellDiv.appendChild(document.createElement('div'));
-
-			var textDiv = bookDiv.appendChild(document.createElement('div'));
-			
-			var title = document.createElement('p');
-			title.innerHTML = thisBook.title;
-			textDiv.appendChild(title);
-			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
-			textDiv.appendChild(price);
-
-			var imgDiv = bookDiv.appendChild(document.createElement('div'));
-			var img = document.createElement('img');
-			img.setAttribute('src', 'images/textbookcover.jpg');
-			imgDiv.appendChild(img);
-
-			users.forEach(function (user) {
-				if (user._id === thisOrder.seller) {
-					thisUser = user;
+				if(sellOrders[i]._id === transaction.orderID) {
+					console.log("Found a transaction attached to this sell order!");
+					bought = true;
+					console.log(sellOrders[i]);
+					console.log(transaction);
 					return;
 				}
 				return;
-			});
-    		stupidClosures(img, thisBook, thisOrder, thisUser);
+			});			
+
+
+			if (bought) {
+				//do nothing
+				// return;
+			} else {
+				var bookDiv = sellDiv.appendChild(document.createElement('div'));
+
+				var textDiv = bookDiv.appendChild(document.createElement('div'));
+				
+				var title = document.createElement('p');
+				title.innerHTML = thisBook.title;
+				textDiv.appendChild(title);
+				var price = document.createElement('p');
+				price.innerHTML = "$" + thisOrder.price;
+				textDiv.appendChild(price);
+
+				var imgDiv = bookDiv.appendChild(document.createElement('div'));
+				var img = document.createElement('img');
+				img.setAttribute('src', 'images/textbookcover.jpg');
+				imgDiv.appendChild(img);
+
+				users.forEach(function (user) {
+					if (user._id === thisOrder.seller) {
+						thisUser = user;
+						return;
+					}
+					return;
+				});
+	    		stupidClosures(img, thisBook, thisOrder, thisUser);
+	    	}
 		}
 	}
 
