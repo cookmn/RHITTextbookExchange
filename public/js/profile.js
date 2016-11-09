@@ -416,7 +416,11 @@ function confirmOrder(transaction, order, book) {
 	console.log(order);
 	console.log(book);
 
+
 	if(order.buyer) {
+		currUser.buyHistory.push(order._id);
+		console.log("Buy history added: now contains " + order._id);
+		console.log(currUser.buyHistory);
 		//buy order
 		$.ajax({
 			url: apiUrl + "buyOrders/" + order._id,
@@ -430,19 +434,42 @@ function confirmOrder(transaction, order, book) {
 			}
 		});
 	} else {
+		currUser.sellHistory.push(order._id);
+		console.log("Sell history added: now contains " + order._id);
+		console.log(currUser.sellHistory);
 		//sell order
 		$.ajax({
 			url: apiUrl + "sellOrders/" + order._id,
 			type: 'DELETE',
 			dataType: 'JSON',
 			success: function () {
-				// window.location = "profile.html";
+				window.location = "profile.html";
 			},
 			error: function (req, status, err) {
 				console.log(err, status, req);
 			}
 		});
 	}
+
+	console.log(currUser);
+	console.log(currUser._id);
+	$.ajax({
+		url: apiUrl + "users/" + currUser._id,
+		type: 'PUT',
+		data: currUser,
+		dataType: 'JSON',
+		success: function (data) {
+			if(data) {
+				console.log("did it");
+				console.log(data);
+			} else {
+				console.log("didn't do it");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
 
 	$.ajax({
 		url: apiUrl + "books/" + book._id,
@@ -461,7 +488,7 @@ function confirmOrder(transaction, order, book) {
 		type: 'DELETE',
 		dataType: 'JSON',
 		success: function () {
-			window.location = "profile.html";
+			// window.location = "profile.html";
 		},
 		error: function (req, status, err) {
 			console.log(err, status, req);
