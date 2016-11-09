@@ -88,7 +88,7 @@ function getBook() {
         error: function (req, status, err) {
             console.log(err, status, req);
         }
-    })
+    });
 }
 
 function saveBook() {
@@ -120,6 +120,7 @@ function saveOrder() {
         closeModal();
         return;
     }
+
     $.ajax({
         url: apiUrl + urlSecondPart + order._id,
         type: 'PUT',
@@ -201,25 +202,29 @@ function loadBuyerInfo() {
     var date = document.getElementById("date");
     var sellerComments = document.getElementById("seller-comments");
 
-
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
-    sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Seller: " + user.firstName + " " + user.lastName + "</p>";
+
+    if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
+        sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Buyer: " + user.firstName + " " + user.lastName + "</p>";
+    } else {
+        sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Seller: " + user.firstName + " " + user.lastName + "</p>";
+    }
     var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
     sellerRatingText.textContent = "Rating : " + calculateRating(user.rating) + " stars";
     var emailText = email.appendChild(document.createElement('p'));
     emailText.innerHTML = '<a href="mailto:' + user.emailAddress + '">Send ' + user.firstName + ' an email!</a>';
 
-    var followersText = followers.appendChild(document.createElement('p'));
-    followersText.textContent = "Current post followers: " + order.favoritedCount;
     var dateText = date.appendChild(document.createElement('p'));
     dateText.textContent = "Originally posted on: " + order.datePosted.substring(0, 10);
 
     var buyerOrSellerProfile = document.getElementById("buyerOrSellerProfile");
     buyerOrSellerProfile.addEventListener("click", function() {profileClickHandler(user)});
 
+    var commentsText = sellerComments.appendChild(document.createElement('p'));
     if (order.seller) {
-        var commentsText = sellerComments.appendChild(document.createElement('p'));
         commentsText.textContent = "Seller Comments: " + order.description;
+    } else {
+        commentsText.textContent = "Buyer Comments: " + order.description;
     }
 }
 
@@ -264,20 +269,6 @@ function getCurrentUserID() {
             console.log(err, status, req);
         }
     })
-}
-
-function favoriteHandler() {
-    var favorite = document.getElementById("favorite"); 
-    var favSpan = document.getElementById("favorited");
-    if (favorite.innerHTML === "Favorite Book") {
-        favorite.innerHTML = "Unfavorite Book";
-        favSpan.style.visibility = "visible";
-        //make ajax PUT request
-    } else {
-        favorite.innerHTML = "Favorite Book";
-        favSpan.style.visibility = "hidden";
-        //make ajax PUT request
-    }
 }
 
 function buyBook() {
@@ -384,7 +375,6 @@ function sellBook() {
                 console.log(err, status, req);
             }
         });    
-        
     }
 }
 
@@ -447,9 +437,6 @@ function editBook() {
                 closeModal();
             }
         }
-
-    } else {
-
     }
 }
 
@@ -477,21 +464,17 @@ function submit() {
         order.price = priceInput.value;
         saveBook();
         saveOrder();
-    } else {
-
     }
 }
 
 $(document).ready(function () {
     validateUser();
-
     loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
     } else {
         editForm = false;
     }
-    console.log(editForm);
     loadImage();
     setup();
 });
@@ -502,13 +485,10 @@ function setup() {
     loadBuyerInfo();
 
     var editBookButton = document.getElementById("buySellEdit");
-    var favoriteButton = document.getElementById("favorite");
     var functionToCall;
     if(editForm) {
         editBookButton.innerHTML = "Edit Book";
         functionToCall = editBook;
-        console.log("this is your order");
-        favoriteButton.style.visibility = "hidden";
 
         if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
             buyOrSell = "buy";
@@ -517,20 +497,15 @@ function setup() {
         }
 
     } else if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
-        favoriteButton.innerHTML = "Favorite Book";
         editBookButton.innerHTML = "Sell Book";
         functionToCall = sellBook;
         console.log("this is a sell order");
-
     } else {
         editBookButton.innerHTML = "Buy Book";
-        favoriteButton.innerHTML = "Favorite Book";
         functionToCall = buyBook;
         console.log("this is a buy order");
-
     }
     editBookButton.addEventListener("click", function () { functionToCall() }, false);
-    favoriteButton.addEventListener("click", function () { favoriteHandler() }, false);
 }
 
 function validateUser() {

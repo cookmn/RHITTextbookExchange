@@ -52,8 +52,6 @@ function getCurrentUser() {
 	var tempUser;
 	try {
 		userToViewString = sessionStorage.getItem("buyerOrSellerToView");
-		console.log("user to view is: ");
-		console.log(userToViewString);
 	} catch (e) {
 		alert("Error when reading from Session Storage " + e);
 		error = true;
@@ -62,8 +60,6 @@ function getCurrentUser() {
 	}
 	if (!error) {
 		currUser = JSON.parse(userToViewString);
-		console.log("currUser is: ");
-		console.log(currUser);
 	}
 }
 
@@ -248,7 +244,6 @@ function bookClickHandler(book, order, user) {
 }
 
 function showRatingModal() {
-	console.log("rating");
 	var modal = document.getElementById('ratingModal');
 	var span = document.getElementsByClassName("close")[0];
 
@@ -276,17 +271,15 @@ function closeRatingModal() {
 	var modal = document.getElementById('ratingModal');
 	var errorMsg = document.getElementById('rating-error');
 	var val = ratingInput.value;
-	console.log(val);
 	if (val < 1 || val > 5) {
 		errorMsg.style.color = 'red';
 		errorMsg.textContent = "Not a valid rating";
 	} else {
 		currUser.rating.push(parseInt(val, 10));
-		console.log(currUser.rating);
 		saveProfile();
 		modal.style.display = "none";
 		ratingNode.removeChild(ratingNode.firstChild);
-		errorMsg.innerHTML = "";		
+		errorMsg.innerHTML = "";
 	}
 }
 

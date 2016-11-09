@@ -5,8 +5,6 @@ var userSchema  = new mongoose.Schema({
     image: String,
     rating: [Number],
     emailAddress: String,
-    favoritedBuyOrders: [String],
-    favoritedSellOrders: [String],
     year: String,
     major: String,
     buyHistory: [String],   //buy order ids
