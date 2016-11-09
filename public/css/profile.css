@@ -80,6 +80,7 @@ div#img  {
 #editProfile {
 	float: right;
 }
+
 #main-div button {
 	float: right;
 	display: inline-block;
@@ -133,11 +134,15 @@ div#img  {
 	font-size: 30px;
 }
 
+.header p {
+	margin-top: 0px;
+}
+
 .bookdivs div div:nth-child(1) {
 	display: inline-block;
 	float: right;
 	word-wrap: break-word;
-	width: 50%;
+	width: 70%;
 }
 
 .bookdivs div div:nth-child(2) {
@@ -207,6 +212,7 @@ div#img  {
     text-decoration: none;
     cursor: pointer;
 }
+
 .rate_widget {
     border:     1px solid #CCC;
     overflow:   visible;
@@ -215,6 +221,7 @@ div#img  {
     width:      180px;
     height:     32px;
 }
+
 .ratings_stars {
     background: url('star_empty.png') no-repeat;
     float:      left;
@@ -222,9 +229,11 @@ div#img  {
     padding:    2px;
     width:      32px;
 }
+
 .ratings_vote {
     background: url('star_full.png') no-repeat;
 }
+
 .ratings_over {
     background: url('star_highlight.png') no-repeat;
 }
@@ -236,6 +245,7 @@ div#img  {
     padding: 5px;
     position:   absolute;  
 } 
+
 .movie_choice {
     font: 10px verdana, sans-serif;
     margin: 0 auto 40px auto;

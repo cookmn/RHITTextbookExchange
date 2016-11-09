@@ -1,7 +1,7 @@
 "use strict";
 
 var apiUrl = "http://localhost:3000/";
-var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers;
+var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers, transactions;
 var book = new Object();
 var order = new Object();
 
@@ -73,6 +73,7 @@ var imageInput = document.getElementById("imageInput"); //this is the file choos
 var imageSRC; //this is set to the result of the file reader upon converting a file to base64 data
 
 $(document).ready(function () {
+	validateUser();
 	setup();
 });
 
@@ -86,12 +87,19 @@ function handlePicPath() { //this method will take the selected file and convert
 	reader.readAsDataURL(file);
 }
 
+function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
+}
+
 function setup() {
 	getAllUsers();
 	setTimeout(function () { getCurrentUser() }, 100);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
+	getTransactions();
 	setTimeout(function () { populateOrders() }, 800);
 	imageInput.addEventListener("change", handlePicPath); //add handler to image file chooser
 }
@@ -104,7 +112,6 @@ function getAllUsers() {
 		success: function (data) {
 			if (data) {
 				allUsers = data;
-				console.log(allUsers);
 			} else {
 				console.log("User info could not get got");
 			}
@@ -210,6 +217,24 @@ function getBooks() {
 	});
 }
 
+function getTransactions() {
+	$.ajax({
+		url: apiUrl + "transactions/",
+		type: 'GET',
+		dataType: 'JSON',
+		success: function (data) {
+			if (data) {
+				transactions = data;
+			} else {
+				console.log("Buy order books could not get got");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});	
+}
+
 function getSellOrders() {
 	$.ajax({
 		url: apiUrl + "sellOrders/",
@@ -228,6 +253,16 @@ function getSellOrders() {
 	});
 }
 
+function calculateRating(ratings){
+	var numRatings = 0;
+	var ratingsTotal = 0;
+	ratings.forEach(function (rating) {
+		numRatings++;
+		ratingsTotal += rating;
+	});
+	return Math.round(10*(ratingsTotal / numRatings))/10;
+}
+
 function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
@@ -239,7 +274,7 @@ function populateOrders() {
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
-	html += "<p>Rating: " + currUser.rating + "/5</p>";
+	html += "<p>Rating: " + calculateRating(currUser.rating) + " stars</p>";
 	html += "</div>";
 
 	var info = document.getElementById("info");
@@ -252,7 +287,24 @@ function populateOrders() {
 	var sellDiv = document.getElementById('selling');
 	sellDiv.innerHTML = "";
 	sellDiv.innerHTML += isSellinghtml;
+	//-----------------------------
+
 	sellOrders.forEach(function (sellOrder) {
+		var sold = false;
+		var thisTransaction; 
+		transactions.forEach(function (transaction) {
+
+			if(sellOrder._id === transaction.orderID && sellOrder.seller === currUser._id) {
+				console.log("Found a transaction attached to this sell order!");
+				sold = true;
+				thisTransaction = transaction;
+				console.log(sellOrder);
+				console.log(transaction);
+				return;
+			}
+			return;
+		});
+	
 		if (sellOrder.seller === currUser._id) {
 			var thisBook, thisOrder;
 
@@ -279,7 +331,15 @@ function populateOrders() {
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
+			if(sold) {
+				price.innerHTML = "SOLD";
+				var confirmButton = document.createElement('button');
+				confirmButton.innerHTML = "Finish Sale";
+				confirmButton.addEventListener("click", function() {confirmOrder(thisTransaction, sellOrder, thisBook)}, false);
+				textDiv.appendChild(confirmButton);
+			} else {
+				price.innerHTML = "$" + thisOrder.price;
+			}
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -292,10 +352,27 @@ function populateOrders() {
 		}
 	});
 
+
 	var buyDiv = document.getElementById('buying');
 	buyDiv.innerHTML = "";
 	buyDiv.innerHTML += isBuyinghtml;
+
+
 	buyOrders.forEach(function (buyOrder) {
+		var bought;
+		var thisTransaction; 
+		transactions.forEach(function (transaction) {
+			if(buyOrder._id === transaction.orderID && buyOrder.buyer === currUser._id) {
+				console.log("Found a transaction attached to this buy order!");
+				bought = true;
+				thisTransaction = transaction;
+				console.log(buyOrder);
+				console.log(transaction);
+				return;
+			} 
+			return;
+		});
+
 		if (buyOrder.buyer === currUser._id) {
 			var thisBook, thisOrder;
 
@@ -322,7 +399,16 @@ function populateOrders() {
 			title.innerHTML = thisBook.title;
 			textDiv.appendChild(title);
 			var price = document.createElement('p');
-			price.innerHTML = "$" + thisOrder.price;
+			if (bought) {
+				price.innerHTML = "BOUGHT";
+				var confirmButton = document.createElement('button');
+				confirmButton.innerHTML = "Finish Purchase";
+				// confirmButton.cssText = "font-size: 10pt;";
+				confirmButton.addEventListener("click", function() {confirmOrder(thisTransaction, buyOrder, thisBook)}, false);
+				textDiv.appendChild(confirmButton);
+			} else {
+				price.innerHTML = "$" + thisOrder.price;
+			}
 			textDiv.appendChild(price);
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
@@ -334,11 +420,97 @@ function populateOrders() {
 			});
 		}
 	});
-
 	var newSellOrder = $('<button id="sellOrder" class="newBook" href="" onclick="createNewSellOrder()">+ Add New</button>')
 	newSellOrder.appendTo(sellDiv);
 	var newBuyOrder = $('<button id="buyOrder" class="newBook" href="" onclick="createNewBuyOrder()">+ Add New</button>')
 	newBuyOrder.appendTo(buyDiv);
+}
+
+function confirmOrder(transaction, order, book) {
+	console.log("You confirmed an order! The details are: ");
+	console.log(transaction);
+	console.log(order);
+	console.log(book);
+
+
+	if(order.buyer) {
+		currUser.buyHistory.push(order._id);
+		console.log("Buy history added: now contains " + order._id);
+		console.log(currUser.buyHistory);
+		//buy order
+		$.ajax({
+			url: apiUrl + "buyOrders/" + order._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				// window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
+	} else {
+		currUser.sellHistory.push(order._id);
+		console.log("Sell history added: now contains " + order._id);
+		console.log(currUser.sellHistory);
+		//sell order
+		$.ajax({
+			url: apiUrl + "sellOrders/" + order._id,
+			type: 'DELETE',
+			dataType: 'JSON',
+			success: function () {
+				window.location = "profile.html";
+			},
+			error: function (req, status, err) {
+				console.log(err, status, req);
+			}
+		});
+	}
+
+	console.log(currUser);
+	console.log(currUser._id);
+	$.ajax({
+		url: apiUrl + "users/" + currUser._id,
+		type: 'PUT',
+		data: currUser,
+		dataType: 'JSON',
+		success: function (data) {
+			if(data) {
+				console.log("did it");
+				console.log(data);
+			} else {
+				console.log("didn't do it");
+			}
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+
+	$.ajax({
+		url: apiUrl + "books/" + book._id,
+		type: 'DELETE',
+		dataType: 'JSON',
+		success: function () {
+			// window.location = "profile.html";
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+
+	$.ajax({
+		url: apiUrl + "transactions/" + transaction._id,
+		type: 'DELETE',
+		dataType: 'JSON',
+		success: function () {
+			// window.location = "profile.html";
+		},
+		error: function (req, status, err) {
+			console.log(err, status, req);
+		}
+	});
+
 }
 
 function deleteBookClickHandler(order, book) {
@@ -694,11 +866,9 @@ function editProfile() {
 		yearNode.appendChild(yearInput);
 		majorNode.appendChild(majorInput);
 
-
 		modal.style.display = "block";
 		span.onclick = function () {
 			closeEditModal();
-
 		}
 
 		var submitButton = document.getElementById("submit");
@@ -713,24 +883,6 @@ function editProfile() {
 			}
 		}
 	} else {
-		var modal = document.getElementById('ratingModal');
-		var span = document.getElementsByClassName("close")[1];
 
-		var ratingInput = document.createElement("textarea");
-		ratingInput.setAttribute("rows", "1");
-		ratingInput.setAttribute("cols", "30");
-		ratingInput.innerHTML = "1";
-
-		ratingNode.appendChild(ratingInput);
-
-		modal.style.display = "block";
-		span.onclick = function () {
-			closeRatingModal();
-		}
-		window.onclick = function (event) {
-			if (event.target == modal) {
-				closeRatingModal();
-			}
-		}
 	}
 }

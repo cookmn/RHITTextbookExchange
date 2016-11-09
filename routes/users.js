@@ -102,11 +102,10 @@ router.route('/:id')
     })
     .put(function(req, res) {
         mongoose.model('User').findById(req.params.id, function (err, user) {
-
             user.firstName = req.body.firstName || user.firstName;
             user.lastName = req.body.lastName || user.lastName;
             user.image = req.body.image || user.image;
-            user.rating = req.body.rating || user.rating;
+            user.rating = req.body['rating[]'] || user.rating;
             user.emailAddress = req.body.emailAddress || user.emailAddress;
             user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
             user.favoritedSellOrders = req.body.favoritedSellOrders || user.favoritedSellOrders;
@@ -122,7 +121,7 @@ router.route('/:id')
                     err.status = 404;
                     res.format({
                         json: function() {
-                            res.json({message: err.status + ' ' + err});
+                            res.json({message: err.status + ' ' + err + ' ' +person});
                         }
                     });
                 } else {

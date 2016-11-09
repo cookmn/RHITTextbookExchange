@@ -43,13 +43,6 @@ var rosefire = new RosefireTokenVerifier(SECRET);
  app.use('/sellOrders', sellOrders);
  app.use('/buyOrders', buyOrders);
 
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   var err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
-
 // error handlers
 
 //development error handler
@@ -75,7 +68,6 @@ app.use(function(err, req, res, next) {
 });
 
 app.post('/foobar', function (req, res) {
-  console.log("i am here");
   var token = req.body.token;
   if (!token) {
     res.status(401).json({

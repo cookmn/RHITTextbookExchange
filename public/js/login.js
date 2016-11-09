@@ -11,7 +11,6 @@ $(document).ready(function() {
 			}
 			//window.location.replace('/homepage.html?authorization=' + rosefireUser.token);
 			console.log(rosefireUser);
-			console.log("hey I am back ");
         $.ajax({
             url: "http://localhost:3000/foobar",
             type: 'POST',

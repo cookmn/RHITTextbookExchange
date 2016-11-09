@@ -117,7 +117,6 @@ function saveOrder() {
     } else if (buyOrSell === "sell") {
         urlSecondPart = "sellOrders/";
     } else {
-        console.log("buyOrSell is: " + buyOrSell);
         closeModal();
         return;
     }
@@ -182,6 +181,16 @@ function loadBookInfo() {
     priceText.textContent = "$" + order.price;
 }
 
+function calculateRating(ratings){
+	var numRatings = 0;
+	var ratingsTotal = 0;
+	ratings.forEach(function (rating) {
+		numRatings++;
+		ratingsTotal += rating;
+	});
+	return Math.round(10*(ratingsTotal / numRatings))/10;
+}
+
 function loadBuyerInfo() {
     var sellerDiv = document.getElementById("seller-info");
 
@@ -194,9 +203,9 @@ function loadBuyerInfo() {
 
 
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
-    sellerNameText.textContent = "Seller: " + user.firstName + " " + user.lastName;
+    sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Seller: " + user.firstName + " " + user.lastName + "</p>";
     var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
-    sellerRatingText.textContent = "Rating : " + user.rating + " stars";
+    sellerRatingText.textContent = "Rating : " + calculateRating(user.rating) + " stars";
     var emailText = email.appendChild(document.createElement('p'));
     emailText.innerHTML = '<a href="mailto:' + user.emailAddress + '">Send ' + user.firstName + ' an email!</a>';
 
@@ -205,10 +214,31 @@ function loadBuyerInfo() {
     var dateText = date.appendChild(document.createElement('p'));
     dateText.textContent = "Originally posted on: " + order.datePosted.substring(0, 10);
 
+    var buyerOrSellerProfile = document.getElementById("buyerOrSellerProfile");
+    buyerOrSellerProfile.addEventListener("click", function() {profileClickHandler(user)});
+
     if (order.seller) {
         var commentsText = sellerComments.appendChild(document.createElement('p'));
         commentsText.textContent = "Seller Comments: " + order.description;
     }
+}
+
+
+function profileClickHandler(user) {
+	var error = false;
+
+	try {
+		var buyerOrSellerToViewString = JSON.stringify(user);
+		sessionStorage.setItem("buyerOrSellerToView", buyerOrSellerToViewString);
+        console.log(sessionStorage);
+	} catch (e) {
+		alert("Error when writing to Session Storage " + e);
+		error = true;
+	}
+	if (!error) {
+		window.location = "otherProfile.html";
+		return false;
+	}
 }
 
 function getCurrentUserID() {
@@ -251,61 +281,111 @@ function favoriteHandler() {
 }
 
 function buyBook() {
-    var transaction = {
-        isBuy: true,
-        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
-        customerID: currentUser._id,
-        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
-    };
+    var confirmModal = document.createElement("div");
+    confirmModal.setAttribute("class", "modal");
 
-    console.log(transaction);
+    var confirmModalContent = document.createElement("div");
+    confirmModalContent.setAttribute("class", "modal-content");
 
-    $.ajax({
-        url: apiUrl + "transactions/",
-        type: 'POST',
-        data: transaction,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                console.log(data);
-            } else {
-                console.log("error posting");
+    var confirmMessage = document.createElement("p");
+    confirmMessage.innerHTML = "Are you sure you want to purhcase this book?";
+    confirmModalContent.appendChild(confirmMessage);
+
+    var confirmButton = document.createElement("button");
+    confirmButton.innerHTML = "Confirm";
+    confirmButton.addEventListener("click", function() {buy()}, false);
+    confirmModalContent.appendChild(confirmButton);
+
+    confirmModal.appendChild(confirmModalContent);
+
+    document.getElementsByTagName("body")[0].appendChild(confirmModal);
+    confirmModal.style.display = "block";
+    console.log(document.getElementsByTagName("body")[0]);
+
+    function buy() {
+        var transaction = {
+            isBuy: true,
+            orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+            customerID: currentUser._id,
+            priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+        };
+
+        console.log(transaction);
+
+        confirmModal.style.display = "none";
+
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'POST',
+            data: transaction,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    console.log(data);
+                    window.location = "selling.html"
+                } else {
+                    console.log("error posting");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
             }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });
+        });
+    }
 }
 
 function sellBook() {
-    console.log("You just called sellBook()!");
 
-    var transaction = {
-        isBuy: false,
-        orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
-        customerID: currentUser._id,
-        priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
-    };
+    var confirmModal = document.createElement("div");
+    confirmModal.setAttribute("class", "modal");
 
-    console.log(transaction);
+    var confirmModalContent = document.createElement("div");
+    confirmModalContent.setAttribute("class", "modal-content");
 
-    $.ajax({
-        url: apiUrl + "transactions/",
-        type: 'POST',
-        data: transaction,
-        dataType: 'JSON',
-        success: function (data) {
-            if (data) {
-                console.log(data);
-            } else {
-                console.log("error posting");
+    var confirmMessage = document.createElement("p");
+    confirmMessage.innerHTML = "Are you sure you want to sell this book?";
+    confirmModalContent.appendChild(confirmMessage);
+
+    var confirmButton = document.createElement("button");
+    confirmButton.innerHTML = "Confirm";
+    confirmButton.addEventListener("click", function() {sell()}, false);
+    confirmModalContent.appendChild(confirmButton);
+
+    confirmModal.appendChild(confirmModalContent);
+
+    document.getElementsByTagName("body")[0].appendChild(confirmModal);
+    confirmModal.style.display = "block";
+    console.log(document.getElementsByTagName("body")[0]);
+
+    function sell() {
+        var transaction = {
+            isBuy: false,
+            orderID: JSON.parse(sessionStorage.getItem("orderToView"))._id,
+            customerID: currentUser._id,
+            priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
+        };
+
+        console.log(transaction);
+
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'POST',
+            data: transaction,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    console.log(data);
+                    window.location = "buying.html";
+                } else {
+                    console.log("error posting");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
             }
-        },
-        error: function (req, status, err) {
-            console.log(err, status, req);
-        }
-    });    
+        });    
+        
+    }
 }
 
 function editBook() {
@@ -403,6 +483,8 @@ function submit() {
 }
 
 $(document).ready(function () {
+    validateUser();
+
     loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
@@ -449,8 +531,11 @@ function setup() {
     }
     editBookButton.addEventListener("click", function () { functionToCall() }, false);
     favoriteButton.addEventListener("click", function () { favoriteHandler() }, false);
-    // if (isYourBook) {
-        // editBookButton.innerHTML = "Edit Book";
-    // }
+}
+
+function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
 }
 

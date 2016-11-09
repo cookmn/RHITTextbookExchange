@@ -5,12 +5,14 @@
     var sellOrders;
     var sellers;
     var isbnString;
+    var transactions;
 
     function setup() {
         getSellOrders();
         getSellers();
-        getBooks();
-        getSortForms();
+        getTransactions();
+        setTimeout(function () {getBooks()}, 100);
+        setTimeout(function () {getSortForms()}, 100);
     }
 
     function getBooks() {
@@ -30,6 +32,24 @@
                 console.log(err, status, req);
             }
         })
+    }
+
+    function getTransactions() {
+        $.ajax({
+            url: apiUrl + "transactions/",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data) {
+                    transactions = data;
+                } else {
+                    console.log("Buy order books could not get got");
+                }
+            },
+            error: function (req, status, err) {
+                console.log(err, status, req);
+            }
+        }); 
     }
 
     function getSellOrders() {
@@ -71,7 +91,6 @@
     function displayBooks(booksToDisplay) {
         var listDiv = document.getElementById("book-list");
         listDiv.innerHTML = "";
-        console.log(booksToDisplay);
         sellOrders.forEach(function (order) {
             var thisOrder;
             var thisSeller;
@@ -85,7 +104,20 @@
                 return;
             })
 
-            if (thisOrder) {
+            var sold = false;
+            transactions.forEach(function (transaction) {
+
+                if(order._id === transaction.orderID) {
+                    console.log("Found a transaction attached to this buy order!");
+                    sold = true;
+                    console.log(order);
+                    console.log(transaction);
+                    return;
+                }
+                return;
+            });
+
+            if (thisOrder && !sold) {
                 var bookDiv = listDiv.appendChild(document.createElement('div'));
                 bookDiv.className = "book-div";
                 var img = $('<img id="book-cover">');
@@ -159,13 +191,14 @@
     }
 
         function getSortForms() {
-        var sortBySubject = document.getElementById("sort-subject");
+        var sortBySubject = $('#sort-subject');
         var sortByPrice = document.getElementById("sort-price");
         var findByIsbn = $('#sort-isbn');
 
-        sortBySubject.addEventListener("change", function() {
-            var subject = sortBySubject.value;
-            filterBooksBySubject(subject);
+        sortBySubject.on('input', function() {
+            subjectString = $(this).val();
+            console.log(subjectString);
+            filterBooksBySubject(subjectString);
         })
 
         sortByPrice.addEventListener("change", function() {
@@ -182,11 +215,10 @@
     function filterBooksBySubject(subject) {
         var newBooks = [];
         books.forEach(function(book) {
-            if (book.subject === subject) {
+            if (book.subject.toString().includes(subject)) {
                 newBooks.push(book);
             }
         });
-
         displayBooks(newBooks);
     }
 
@@ -231,8 +263,14 @@
     }
 
     $(window).on('load', function () {
-        //load in initial state
+        validateUser();
         setup();
     })
+
+    function validateUser() {
+        if (!JSON.parse(sessionStorage.getItem("userData"))) {
+            window.location.href = "./login.html";
+        }
+    }
 
 })();
