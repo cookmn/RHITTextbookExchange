@@ -9,7 +9,7 @@
 		getUsers();
 		getBooks();
 		getTransactions();
-		setTimeout(function () { populateOrders() }, 150);
+		setTimeout(function () { populateOrders() }, 500);
 	}
 
 	function getBuyOrders() {
@@ -111,7 +111,6 @@
 			if(!buyOrders[i]) {
 				continue;
 			}
-
 			books.forEach(function (book) {
 				if(buyOrders[i].textbook === book._id) {
 					thisOrder = buyOrders[i];
