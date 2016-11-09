@@ -4,7 +4,7 @@
     var books;
     var sellOrders;
     var sellers;
-    var isbnString;
+    var isbnString, subjectString;
     var transactions;
 
     function setup() {
