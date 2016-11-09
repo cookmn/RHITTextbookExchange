@@ -33,7 +33,7 @@ router.route('/')
       title: req.body.title,
       authors: req.body.authors,
       ISBN: req.body.ISBN,
-      class: req.body.class,
+      course: req.body.course,
       subject: req.body.subject,
       imagePath: req.body.class
     }, function (err, book) {

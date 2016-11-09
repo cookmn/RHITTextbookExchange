@@ -95,7 +95,7 @@ function validateUser() {
 
 function setup() {
 	getAllUsers();
-	setTimeout(function () { getCurrentUser() }, 100);
+	setTimeout(function () { getCurrentUser() }, 300);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
@@ -467,8 +467,6 @@ function confirmOrder(transaction, order, book) {
 		});
 	}
 
-	console.log(currUser);
-	console.log(currUser._id);
 	$.ajax({
 		url: apiUrl + "users/" + currUser._id,
 		type: 'PUT',
