@@ -181,6 +181,16 @@ function loadBookInfo() {
     priceText.textContent = "$" + order.price;
 }
 
+function calculateRating(ratings){
+	var numRatings = 0;
+	var ratingsTotal = 0;
+	ratings.forEach(function (rating) {
+		numRatings++;
+		ratingsTotal += rating;
+	});
+	return Math.round(10*(ratingsTotal / numRatings))/10;
+}
+
 function loadBuyerInfo() {
     var sellerDiv = document.getElementById("seller-info");
 
@@ -193,9 +203,9 @@ function loadBuyerInfo() {
 
 
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
-    sellerNameText.textContent = "Seller: " + user.firstName + " " + user.lastName;
+    sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Seller: " + user.firstName + " " + user.lastName + "</p>";
     var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
-    sellerRatingText.textContent = "Rating : " + user.rating + " stars";
+    sellerRatingText.textContent = "Rating : " + calculateRating(user.rating) + " stars";
     var emailText = email.appendChild(document.createElement('p'));
     emailText.innerHTML = '<a href="mailto:' + user.emailAddress + '">Send ' + user.firstName + ' an email!</a>';
 
@@ -204,10 +214,31 @@ function loadBuyerInfo() {
     var dateText = date.appendChild(document.createElement('p'));
     dateText.textContent = "Originally posted on: " + order.datePosted.substring(0, 10);
 
+    var buyerOrSellerProfile = document.getElementById("buyerOrSellerProfile");
+    buyerOrSellerProfile.addEventListener("click", function() {profileClickHandler(user)});
+
     if (order.seller) {
         var commentsText = sellerComments.appendChild(document.createElement('p'));
         commentsText.textContent = "Seller Comments: " + order.description;
     }
+}
+
+
+function profileClickHandler(user) {
+	var error = false;
+
+	try {
+		var buyerOrSellerToViewString = JSON.stringify(user);
+		sessionStorage.setItem("buyerOrSellerToView", buyerOrSellerToViewString);
+        console.log(sessionStorage);
+	} catch (e) {
+		alert("Error when writing to Session Storage " + e);
+		error = true;
+	}
+	if (!error) {
+		window.location = "otherProfile.html";
+		return false;
+	}
 }
 
 function getCurrentUserID() {

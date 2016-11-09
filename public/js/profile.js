@@ -239,6 +239,16 @@ function getSellOrders() {
 	});
 }
 
+function calculateRating(ratings){
+	var numRatings = 0;
+	var ratingsTotal = 0;
+	ratings.forEach(function (rating) {
+		numRatings++;
+		ratingsTotal += rating;
+	});
+	return Math.round(10*(ratingsTotal / numRatings))/10;
+}
+
 function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
@@ -248,7 +258,7 @@ function populateOrders() {
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
-	html += "<p>Rating: " + currUser.rating + "/5</p>";
+	html += "<p>Rating: " + calculateRating(currUser.rating) + " stars</p>";
 	html += "</div>";
 
 	var info = document.getElementById("info");
@@ -812,7 +822,6 @@ function editProfile() {
 		yearNode.appendChild(yearInput);
 		majorNode.appendChild(majorInput);
 
-
 		modal.style.display = "block";
 		span.onclick = function () {
 			closeEditModal();
@@ -830,24 +839,6 @@ function editProfile() {
 			}
 		}
 	} else {
-		var modal = document.getElementById('ratingModal');
-		var span = document.getElementsByClassName("close")[1];
 
-		var ratingInput = document.createElement("textarea");
-		ratingInput.setAttribute("rows", "1");
-		ratingInput.setAttribute("cols", "30");
-		ratingInput.innerHTML = "1";
-
-		ratingNode.appendChild(ratingInput);
-
-		modal.style.display = "block";
-		span.onclick = function () {
-			closeRatingModal();
-		}
-		window.onclick = function (event) {
-			if (event.target == modal) {
-				closeRatingModal();
-			}
-		}
 	}
 }
