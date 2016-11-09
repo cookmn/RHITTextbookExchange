@@ -121,7 +121,7 @@ router.route('/:id')
                     err.status = 404;
                     res.format({
                         json: function() {
-                            res.json({message: err.status + ' ' + err});
+                            res.json({message: err.status + ' ' + err + ' ' +person});
                         }
                     });
                 } else {
