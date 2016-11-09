@@ -79,6 +79,8 @@ $(document).ready(function () {
 
 function handlePicPath() { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
 	var file = document.querySelector('input[type=file]').files[0]; //get the file from the input with type field 
+	console.log("file is: ");
+	console.log(file);
 	var reader = new FileReader();
 	reader.onloadend = function (fileLoadedEvent) {
         console.log(fileLoadedEvent.target.result); //dumps the base64 data to the console. 
