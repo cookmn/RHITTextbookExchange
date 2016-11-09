@@ -49,7 +49,23 @@ var commentsText = sellerComments.appendChild(document.createElement('p'));
 var commentsNode = document.getElementById("commentsInput");
 var commentsInput = document.createElement("textarea");
 
+var imageInput = document.getElementById("imageInput"); //this is the file chooser that appears in the modal
+var profileImage = document.getElementById("book-image");
+var imageTag = profileImage.appendChild(document.createElement('img'));
+
+var imageSRC;
+
 // Load book from browser session storage
+function handlePicPath() { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
+	var file = document.querySelector('input[type=file]').files[0]; //get the file from the input with type field  
+	var reader = new FileReader();
+	reader.onloadend = function (fileLoadedEvent) { 
+		imageSRC = fileLoadedEvent.target.result;
+    }
+	reader.readAsDataURL(file);
+}
+
+
 function loadBook() {
     var error = false;
     var bookToViewString;
@@ -76,7 +92,7 @@ function getBook() {
     $.ajax({
         url: apiUrl + "books/" + book._id,
         type: 'GET',
-        data: book,
+        // data: book,
         dataType: 'JSON',
         success: function (data) {
             if (data) {
@@ -165,10 +181,10 @@ function deleteBook() {
     return;
 }
 
-function loadImage() {
-    var bookImage = document.getElementById("book-image");
-    var image = bookImage.appendChild(document.createElement('img'));
-    image.setAttribute('src', 'images/book_placeholder.jpg');
+function loadImage(imagePath) {
+    // var bookImage = document.getElementById("book-image");
+    // var image = bookImage.appendChild(document.createElement('img'));
+    imageTag.setAttribute('src', imagePath);
 }
 
 function loadBookInfo() {
@@ -235,7 +251,6 @@ function profileClickHandler(user) {
 	try {
 		var buyerOrSellerToViewString = JSON.stringify(user);
 		sessionStorage.setItem("buyerOrSellerToView", buyerOrSellerToViewString);
-        console.log(sessionStorage);
 	} catch (e) {
 		alert("Error when writing to Session Storage " + e);
 		error = true;
@@ -260,7 +275,6 @@ function getCurrentUserID() {
                     }
                     return;
                 });
-                // console.log(currUser);
             } else {
                 console.log("User info could not get got");
             }
@@ -291,7 +305,6 @@ function buyBook() {
 
     document.getElementsByTagName("body")[0].appendChild(confirmModal);
     confirmModal.style.display = "block";
-    console.log(document.getElementsByTagName("body")[0]);
 
     function buy() {
         var transaction = {
@@ -301,7 +314,6 @@ function buyBook() {
             priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
         };
 
-        console.log(transaction);
 
         confirmModal.style.display = "none";
 
@@ -312,7 +324,6 @@ function buyBook() {
             dataType: 'JSON',
             success: function (data) {
                 if (data) {
-                    console.log(data);
                     window.location = "selling.html"
                 } else {
                     console.log("error posting");
@@ -346,7 +357,6 @@ function sellBook() {
 
     document.getElementsByTagName("body")[0].appendChild(confirmModal);
     confirmModal.style.display = "block";
-    console.log(document.getElementsByTagName("body")[0]);
 
     function sell() {
         var transaction = {
@@ -356,7 +366,6 @@ function sellBook() {
             priceOfTransaction: JSON.parse(sessionStorage.getItem("orderToView")).price
         };
 
-        console.log(transaction);
 
         $.ajax({
             url: apiUrl + "transactions/",
@@ -365,7 +374,6 @@ function sellBook() {
             dataType: 'JSON',
             success: function (data) {
                 if (data) {
-                    console.log(data);
                     window.location = "buying.html";
                 } else {
                     console.log("error posting");
@@ -461,6 +469,9 @@ function submit() {
         book.subject = subjectInput.value;
         order.condition = conditionInput.value;
         book.course = courseInput.value;
+        book.imagePath = imageSRC;
+        sessionStorage.setItem("bookToView", JSON.stringify(book));
+        loadImage(book.imagePath);
         order.price = priceInput.value;
         saveBook();
         saveOrder();
@@ -475,7 +486,7 @@ $(document).ready(function () {
     } else {
         editForm = false;
     }
-    loadImage();
+    loadImage(book.imagePath);
     setup();
 });
 
@@ -499,13 +510,12 @@ function setup() {
     } else if (JSON.parse(sessionStorage.getItem("orderToView")).buyer) {
         editBookButton.innerHTML = "Sell Book";
         functionToCall = sellBook;
-        console.log("this is a sell order");
     } else {
         editBookButton.innerHTML = "Buy Book";
         functionToCall = buyBook;
-        console.log("this is a buy order");
     }
     editBookButton.addEventListener("click", function () { functionToCall() }, false);
+	imageInput.addEventListener("change", handlePicPath); //add handler to image file chooser
 }
 
 function validateUser() {
