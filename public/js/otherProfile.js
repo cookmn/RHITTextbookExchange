@@ -120,19 +120,17 @@ function getSellOrders() {
 	});
 }
 
-function calculateRating(){
-	var ratings = currUser.rating;
+function calculateRating(ratings){
 	var numRatings = 0;
 	var ratingsTotal = 0;
 	ratings.forEach(function (rating) {
 		numRatings++;
 		ratingsTotal += rating;
 	});
-	return ratingsTotal / numRatings;
+	return Math.round(10*(ratingsTotal / numRatings))/10;
 }
 
 function populateOrders() {
-	var rating = calculateRating();
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 
@@ -141,7 +139,7 @@ function populateOrders() {
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
 	html += "<p>Sold: " + currUser.sellHistory.length + " books</p>";
-	html += "<p>Rating: " + rating + "/5</p>";
+	html += "<p>Rating: " + calculateRating(currUser.rating) + " stars</p>";
 	html += "</div>";
 
 	var info = document.getElementById("info");
@@ -286,8 +284,8 @@ function closeRatingModal() {
 	ratingNode.removeChild(ratingNode.firstChild);
 }
 
-	function saveProfile() {
-		console.log(currUser);
+function saveProfile() {
+	console.log(currUser.rating);
 	$.ajax({
 		url: apiUrl + "users/" + currUser._id,
 		type: 'PUT',

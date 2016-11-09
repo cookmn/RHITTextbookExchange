@@ -181,6 +181,16 @@ function loadBookInfo() {
     priceText.textContent = "$" + order.price;
 }
 
+function calculateRating(ratings){
+	var numRatings = 0;
+	var ratingsTotal = 0;
+	ratings.forEach(function (rating) {
+		numRatings++;
+		ratingsTotal += rating;
+	});
+	return Math.round(10*(ratingsTotal / numRatings))/10;
+}
+
 function loadBuyerInfo() {
     var sellerDiv = document.getElementById("seller-info");
 
@@ -195,7 +205,7 @@ function loadBuyerInfo() {
     var sellerNameText = sellerName.appendChild(document.createElement('p'));
     sellerNameText.innerHTML = "<p id='buyerOrSellerProfile'>Seller: " + user.firstName + " " + user.lastName + "</p>";
     var sellerRatingText = sellerRating.appendChild(document.createElement('p'));
-    sellerRatingText.textContent = "Rating : " + user.rating + " stars";
+    sellerRatingText.textContent = "Rating : " + calculateRating(user.rating) + " stars";
     var emailText = email.appendChild(document.createElement('p'));
     emailText.innerHTML = '<a href="mailto:' + user.emailAddress + '">Send ' + user.firstName + ' an email!</a>';
 
