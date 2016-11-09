@@ -815,11 +815,9 @@ function editProfile() {
 		yearNode.appendChild(yearInput);
 		majorNode.appendChild(majorInput);
 
-
 		modal.style.display = "block";
 		span.onclick = function () {
 			closeEditModal();
-
 		}
 
 		var submitButton = document.getElementById("submit");

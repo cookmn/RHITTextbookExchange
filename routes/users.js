@@ -101,15 +101,11 @@ router.route('/:id')
         })
     })
     .put(function(req, res) {
-        console.log("putting");
         mongoose.model('User').findById(req.params.id, function (err, user) {
-            console.log(req.body);
             user.firstName = req.body.firstName || user.firstName;
             user.lastName = req.body.lastName || user.lastName;
             user.image = req.body.image || user.image;
             user.rating = req.body['rating[]'] || user.rating;
-            console.log(req.body['rating[]']);
-            console.log(req.body.image);
             user.emailAddress = req.body.emailAddress || user.emailAddress;
             user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
             user.favoritedSellOrders = req.body.favoritedSellOrders || user.favoritedSellOrders;

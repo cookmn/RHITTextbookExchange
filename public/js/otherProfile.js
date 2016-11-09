@@ -1,4 +1,5 @@
 "use strict";
+var ratingInput = document.createElement("textarea");
 
 var apiUrl = "http://localhost:3000/";
 var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers;
@@ -120,14 +121,14 @@ function getSellOrders() {
 	});
 }
 
-function calculateRating(ratings){
+function calculateRating(ratings) {
 	var numRatings = 0;
 	var ratingsTotal = 0;
 	ratings.forEach(function (rating) {
 		numRatings++;
 		ratingsTotal += rating;
 	});
-	return Math.round(10*(ratingsTotal / numRatings))/10;
+	return Math.round(10 * (ratingsTotal / numRatings)) / 10;
 }
 
 function populateOrders() {
@@ -251,7 +252,6 @@ function showRatingModal() {
 	var modal = document.getElementById('ratingModal');
 	var span = document.getElementsByClassName("close")[0];
 
-	var ratingInput = document.createElement("textarea");
 	ratingInput.setAttribute("rows", "1");
 	ratingInput.setAttribute("cols", "30");
 	ratingInput.innerHTML = "1";
@@ -260,32 +260,30 @@ function showRatingModal() {
 
 	modal.style.display = "block";
 	span.onclick = function () {
-		closeRatingModal();
+		closeModal();
 	}
-	window.onclick = function (event) {
-		if (event.target == modal) {
-			closeRatingModal();
-		}
-	}
+	var submitButton = document.getElementById("submit");
+	submitButton.addEventListener("click", closeRatingModal);
+}
+
+function closeModal() {
+	var modal = document.getElementById("ratingModal");
+	modal.style.display = "none";
+	ratingNode.removeChild(ratingNode.firstChild);
 }
 
 function closeRatingModal() {
 	var modal = document.getElementById('ratingModal');
-	//var ratings = currUser.rating;
-	//console.log(ratings);
-	//ratings.push(1);
-	//console.log(ratings);
-	console.log(currUser.rating);
-	currUser.rating.push(1);
+	var val = ratingInput.value;
+	console.log(val);
+	currUser.rating.push(parseInt(val, 10));
 	console.log(currUser.rating);
 	saveProfile();
-	//console.log(currUser.rating);
 	modal.style.display = "none";
 	ratingNode.removeChild(ratingNode.firstChild);
 }
 
 function saveProfile() {
-	console.log(currUser.rating);
 	$.ajax({
 		url: apiUrl + "users/" + currUser._id,
 		type: 'PUT',
@@ -293,8 +291,7 @@ function saveProfile() {
 		dataType: 'JSON',
 		success: function (data) {
 			if (data) {
-				console.log("putting user data");
-				console.log(currUser);
+				//location.reload();
 				return false;
 			} else {
 				console.log("Profile info could not be updated");
