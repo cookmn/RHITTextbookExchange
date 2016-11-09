@@ -35,8 +35,6 @@ router.route('/')
         image: req.body.image,
         rating: req.body.rating,
         emailAddress: req.body.emailAddress,
-        favoritedBuyOrders: req.body.favoritedBuyOrders,
-        favoritedSellOrders: req.body.favoritedSellOrders,
         year: req.body.year,
         major: req.body.major,
         buyHistory: req.body.buyHistory,   //buy order ids
@@ -107,8 +105,6 @@ router.route('/:id')
             user.image = req.body.image || user.image;
             user.rating = req.body['rating[]'] || user.rating;
             user.emailAddress = req.body.emailAddress || user.emailAddress;
-            user.favoritedBuyOrders = req.body.favoritedBuyOrders || user.favoritedBuyOrders;
-            user.favoritedSellOrders = req.body.favoritedSellOrders || user.favoritedSellOrders;
             user.year = req.body.year || user.year;
             user.major = req.body.major || user.major;
             user.buyHistory = req.body.buyHistory || user.buyHistory;

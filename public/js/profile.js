@@ -652,7 +652,6 @@ function createBook() {
 				var currentDate = new Date();
 				order.datePosted = currentDate.toDateString();
 				order.description = commentsInput.value;
-				order.favoritedCount = "0";
 				if (buyOrSell == "sell") {
 					order.seller = currUser._id;
 					createSellOrder();

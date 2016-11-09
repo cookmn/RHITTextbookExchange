@@ -35,8 +35,7 @@ router.route('/')
         datePosted: req.body.datePosted,
         description: req.body.description,
         price: req.body.price,
-        condition: req.body.condition,
-        favoritedCount: req.body.favoritedCount
+        condition: req.body.condition
     }, function (err, sellOrder) {
       if (err) {
         res.send('problem adding sell order to the db');
@@ -104,7 +103,6 @@ router.route('/:id')
             sellOrder.description = req.body.description || sellOrder.description;
             sellOrder.price = req.body.price || sellOrder.price;
             sellOrder.condition = req.body.condition || sellOrder.condition;
-            sellOrder.favoritedCount = req.body.favoritedCount || sellOrder.favoritedCount;
 
             sellOrder.save(function (err, order) {
                 if (err) {

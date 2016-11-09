@@ -4,13 +4,12 @@
 	var books, buyOrders, sellOrders, users, transactions;
 
 	function setup() {
-
 		getBuyOrders();
 		getSellOrders();
 		getUsers();
 		getBooks();
 		getTransactions();
-		setTimeout(function () {populateOrders()}, 150);
+		setTimeout(function () { populateOrders() }, 150);
 	}
 
 	function getBuyOrders() {
@@ -48,7 +47,6 @@
                 console.log(err, status, req);
             }
         });
-
 	}
 
 	function getUsers() {
@@ -68,7 +66,6 @@
             }
         })
 	}
-
 
 	function getBooks() {
 		$.ajax({
@@ -126,12 +123,8 @@
 
 			var bought = false;
 			transactions.forEach(function (transaction) {
-
 				if(buyOrders[i]._id === transaction.orderID) {
-					console.log("Found a transaction attached to this buy order!");
 					bought = true;
-					console.log(buyOrders[i]);
-					console.log(transaction);
 					return;
 				}
 				return;
@@ -188,21 +181,17 @@
 				return;
 			});
 
-			var sell = false;
+			var sold = false;
 			transactions.forEach(function (transaction) {
 
 				if(sellOrders[i]._id === transaction.orderID) {
-					console.log("Found a transaction attached to this sell order!");
-					bought = true;
-					console.log(sellOrders[i]);
-					console.log(transaction);
+					sold = true;
 					return;
 				}
 				return;
-			});			
+			});
 
-
-			if (bought) {
+			if (sold) {
 				//do nothing
 				// return;
 			} else {

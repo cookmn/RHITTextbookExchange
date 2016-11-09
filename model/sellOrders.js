@@ -5,8 +5,7 @@ var sellOrderSchema  = new mongoose.Schema({
     datePosted: Date,
     description: String,
     price: Number,
-    condition: String,
-    favoritedCount: Number
+    condition: String
 });
 
 mongoose.model('sellOrder', sellOrderSchema);
