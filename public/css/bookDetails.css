@@ -23,15 +23,20 @@ body {
 }
 
 #book-info {
-    height: 290px;
+    height: 340px;
 }
 
 #book-image {
     float: left;
     width: 250px;
-    height: 250px;
+    height: 300px;
     padding: 20px;
     overflow: hidden;
+}
+
+img {
+    width: 250px;
+    height: 300px;
 }
 
 #book-text {

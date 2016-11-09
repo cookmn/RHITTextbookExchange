@@ -95,7 +95,7 @@ function validateUser() {
 
 function setup() {
 	getAllUsers();
-	setTimeout(function () { getCurrentUser() }, 200);
+	setTimeout(function () { getCurrentUser() }, 300);
 	getBuyOrders();
 	getSellOrders();
 	getBooks();
