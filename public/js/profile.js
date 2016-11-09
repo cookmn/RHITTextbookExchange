@@ -70,6 +70,7 @@ var buyingdiv = document.getElementById("buying");
 
 //these variables relate to image storage, use as reference for adding it elsewhere in the project
 var imageInput = document.getElementById("imageInput"); //this is the file chooser that appears in the modal
+var bookInputImage = document.getElementById("bookInputImage");
 var imageSRC; //this is set to the result of the file reader upon converting a file to base64 data
 
 $(document).ready(function () {
@@ -77,8 +78,8 @@ $(document).ready(function () {
 	setup();
 });
 
-function handlePicPath() { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
-	var file = document.querySelector('input[type=file]').files[0]; //get the file from the input with type field 
+function handlePicPath(inputElement) { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
+	var file = inputElement.files[0]; //get the file from the input with type field 
 	console.log("file is: ");
 	console.log(file);
 	var reader = new FileReader();
@@ -103,7 +104,8 @@ function setup() {
 	getBooks();
 	getTransactions();
 	setTimeout(function () { populateOrders() }, 800);
-	imageInput.addEventListener("change", handlePicPath); //add handler to image file chooser
+	imageInput.addEventListener("change", function() {handlePicPath(imageInput)}); //add handler to image file chooser
+	bookInputImage.addEventListener("change", function () {handlePicPath(bookInputImage)});
 }
 
 function getAllUsers() {
@@ -816,6 +818,7 @@ function closeModal() {
 	book.authors = authorsInput.value;
 	book.subject = subjectInput.value;
 	book.course = courseInput.value;
+	book.imagePath = imageSRC;
 	createBook();
 }
 
