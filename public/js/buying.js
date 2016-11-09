@@ -32,7 +32,7 @@
             error: function (req, status, err) {
                 console.log(err, status, req);
             }
-        })
+        });
     }
 
     function getTransactions() {
@@ -230,7 +230,6 @@
         } else {
             buyOrders.sort(highFirst);
         }
-
         displayBooks(books);
     }
 

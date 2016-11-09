@@ -88,7 +88,7 @@ function getBook() {
         error: function (req, status, err) {
             console.log(err, status, req);
         }
-    })
+    });
 }
 
 function saveBook() {
@@ -120,6 +120,7 @@ function saveOrder() {
         closeModal();
         return;
     }
+
     $.ajax({
         url: apiUrl + urlSecondPart + order._id,
         type: 'PUT',
@@ -374,7 +375,6 @@ function sellBook() {
                 console.log(err, status, req);
             }
         });    
-        
     }
 }
 
@@ -437,9 +437,6 @@ function editBook() {
                 closeModal();
             }
         }
-
-    } else {
-
     }
 }
 
@@ -467,21 +464,17 @@ function submit() {
         order.price = priceInput.value;
         saveBook();
         saveOrder();
-    } else {
-
     }
 }
 
 $(document).ready(function () {
     validateUser();
-
     loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
     } else {
         editForm = false;
     }
-    console.log(editForm);
     loadImage();
     setup();
 });

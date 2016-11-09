@@ -227,7 +227,6 @@
 		img.addEventListener("click", function () {
 			bookClickHandler(book, order, user)
 		}, false);
-
 	}
 
 	function bookClickHandler(book, order, user) {
