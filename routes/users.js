@@ -116,7 +116,6 @@ router.route('/:id')
 
             user.save(function (err, person) {
                 if (err) {
-                    console.log("error");
                     res.status(404);
                     err = new Error('Problem updating user');
                     err.status = 404;
@@ -126,7 +125,6 @@ router.route('/:id')
                         }
                     });
                 } else {
-                    console.log("saving");
                     res.format({
                         json: function() {
                             res.json(person);
