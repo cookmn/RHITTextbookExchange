@@ -274,13 +274,20 @@ function closeModal() {
 
 function closeRatingModal() {
 	var modal = document.getElementById('ratingModal');
+	var errorMsg = document.getElementById('rating-error');
 	var val = ratingInput.value;
 	console.log(val);
-	currUser.rating.push(parseInt(val, 10));
-	console.log(currUser.rating);
-	saveProfile();
-	modal.style.display = "none";
-	ratingNode.removeChild(ratingNode.firstChild);
+	if (val < 1 || val > 5) {
+		errorMsg.style.color = 'red';
+		errorMsg.textContent = "Not a valid rating";
+	} else {
+		currUser.rating.push(parseInt(val, 10));
+		console.log(currUser.rating);
+		saveProfile();
+		modal.style.display = "none";
+		ratingNode.removeChild(ratingNode.firstChild);
+		errorMsg.innerHTML = "";		
+	}
 }
 
 function saveProfile() {
