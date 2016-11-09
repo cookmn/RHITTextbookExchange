@@ -263,7 +263,14 @@
     }
 
     $(window).on('load', function () {
+        validateUser();
         setup();
     })
+
+    function validateUser() {
+        if (!JSON.parse(sessionStorage.getItem("userData"))) {
+            window.location.href = "./login.html";
+        }
+    }
 
 })();

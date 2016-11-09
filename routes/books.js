@@ -58,9 +58,6 @@ router.param('id', function (req, res, next, id) {
             err = new Error('Not Found');
             err.status = 404;
             res.format({
-                // html: function(){
-                //     next(err);
-                // },
                 json: function () {
                     res.json({ message: err.status + ' ' + err });
                 }

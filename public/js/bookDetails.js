@@ -452,6 +452,8 @@ function submit() {
 }
 
 $(document).ready(function () {
+    validateUser();
+
     loadBook();
     if (JSON.parse(sessionStorage.getItem("userData")).email === JSON.parse(sessionStorage.getItem("userToView")).emailAddress) {
         editForm = true;
@@ -498,8 +500,11 @@ function setup() {
     }
     editBookButton.addEventListener("click", function () { functionToCall() }, false);
     favoriteButton.addEventListener("click", function () { favoriteHandler() }, false);
-    // if (isYourBook) {
-        // editBookButton.innerHTML = "Edit Book";
-    // }
+}
+
+function validateUser() {
+    if (!JSON.parse(sessionStorage.getItem("userData"))) {
+        window.location.href = "./login.html";
+    }
 }
 
