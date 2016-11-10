@@ -469,7 +469,7 @@ function submit() {
         book.subject = subjectInput.value;
         order.condition = conditionInput.value;
         book.course = courseInput.value;
-        book.imagePath = imageSRC;
+        book.imagePath = imageSRC || book.imagePath;
         sessionStorage.setItem("bookToView", JSON.stringify(book));
         loadImage(book.imagePath);
         order.price = priceInput.value;

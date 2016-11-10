@@ -9,7 +9,7 @@
 		getUsers();
 		getBooks();
 		getTransactions();
-		setTimeout(function () { populateOrders() }, 150);
+		setTimeout(function () { populateOrders() }, 500);
 	}
 
 	function getBuyOrders() {
@@ -111,7 +111,6 @@
 			if(!buyOrders[i]) {
 				continue;
 			}
-
 			books.forEach(function (book) {
 				if(buyOrders[i].textbook === book._id) {
 					thisOrder = buyOrders[i];
@@ -147,7 +146,7 @@
 
 				var imgDiv = bookDiv.appendChild(document.createElement('div'));
 				var img = document.createElement('img');
-				img.setAttribute('src', 'images/textbookcover.jpg');
+				img.setAttribute('src', thisBook.imagePath);
 				imgDiv.appendChild(img);
 
 				users.forEach(function (user) {
@@ -208,7 +207,7 @@
 
 				var imgDiv = bookDiv.appendChild(document.createElement('div'));
 				var img = document.createElement('img');
-				img.setAttribute('src', 'images/textbookcover.jpg');
+				img.setAttribute('src', thisBook.imagePath);
 				imgDiv.appendChild(img);
 
 				users.forEach(function (user) {
