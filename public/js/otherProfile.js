@@ -131,7 +131,7 @@ function populateOrders() {
 	isSellinghtml = "<div class='header'><p>" + currUser.firstName + isSellinghtml;
 	isBuyinghtml = "<div class='header'><p>" + currUser.firstName + isBuyinghtml;
 
-	var html = "<div id='img'><img id='profilePic' src='images/user-blank.png'></div>"
+	var html = "<div id='img'><img id='profilePic' src=" + currUser.image + "></div>"
 	html += "<div id='details'><p>" + currUser.firstName + " " + currUser.lastName + "</p>";
 	html += "<p>" + currUser.year + ", " + currUser.major + " major</p>";
 	html += "<p>Bought: " + currUser.buyHistory.length + " books</p>";
@@ -174,7 +174,7 @@ function populateOrders() {
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
 			var img = $('<img class="sell-image">');
-			img.attr('src', 'images/textbookcover.jpg');
+			img.attr('src', thisBook.imagePath);
 			img.appendTo(imgDiv);
 			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
@@ -210,7 +210,7 @@ function populateOrders() {
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
 			var img = $('<img class="sell-image">');
-			img.attr('src', 'images/textbookcover.jpg');
+			img.attr('src', thisBook.imagePath);
 			img.appendTo(imgDiv);
 			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
