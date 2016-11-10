@@ -1,6 +1,6 @@
 "use strict";
 
-var apiUrl = "http://localhost:3000/";
+var apiUrl = "https://rhit-textbookexchange.herokuapp.com/";
 var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers, transactions;
 var book = new Object();
 var order = new Object();

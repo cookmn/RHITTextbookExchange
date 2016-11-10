@@ -1,7 +1,7 @@
 "use strict";
 var ratingInput = document.createElement("textarea");
 
-var apiUrl = "http://localhost:3000/";
+var apiUrl = "https://rhit-textbookexchange.herokuapp.com/";
 var books, currUser, buyOrders, sellOrders, currUserID, buyOrSell, createdBook, allUsers;
 var book = new Object();
 var order = new Object();

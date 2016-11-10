@@ -13,7 +13,7 @@ $(document).ready(function () {
             console.log(rosefireUser);
 
             $.ajax({
-                url: "http://localhost:3000/foobar",
+                url: "https://rhit-textbookexchange.herokuapp.com/foobar",
                 type: 'POST',
                 data: rosefireUser,
                 dataType: 'JSON',
