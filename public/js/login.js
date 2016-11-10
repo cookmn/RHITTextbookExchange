@@ -13,7 +13,7 @@ $(document).ready(function () {
             console.log(rosefireUser);
 
             $.ajax({
-                url: "http://localhost:5000/foobar",
+                url: "http://localhost:3000/foobar",
                 type: 'POST',
                 data: rosefireUser,
                 dataType: 'JSON',

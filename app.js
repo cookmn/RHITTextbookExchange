@@ -15,7 +15,7 @@ var sellOrders = require('./routes/sellOrders');
 var buyOrders = require('./routes/buyOrders');
 var transactions = require('./routes/transactions');
 
-var RosefireTokenVerifier = require('rosefire-node');
+var RosefireTokenVerifier = require('./rosefire-node');
 
 var app = express();
 app.use(cors());
