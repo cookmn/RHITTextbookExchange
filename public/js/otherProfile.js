@@ -48,10 +48,13 @@ function getAllUsers() {
 
 function getCurrentUser() {
 	var error = false;
+	var loggedInUser;
+	var loggedInUserString;
 	var userToViewString;
 	var tempUser;
 	try {
 		userToViewString = sessionStorage.getItem("buyerOrSellerToView");
+		loggedInUserString = sessionStorage.getItem("userData");
 	} catch (e) {
 		alert("Error when reading from Session Storage " + e);
 		error = true;
@@ -60,6 +63,11 @@ function getCurrentUser() {
 	}
 	if (!error) {
 		currUser = JSON.parse(userToViewString);
+		loggedInUser = JSON.parse(loggedInUserString);
+		if (currUser.emailAddress === loggedInUser.email) {
+			// console.log("this is your profile.");
+			window.location = "profile.html";
+		}
 	}
 }
 
