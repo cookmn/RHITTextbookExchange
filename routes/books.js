@@ -35,7 +35,7 @@ router.route('/')
       ISBN: req.body.ISBN,
       course: req.body.course,
       subject: req.body.subject,
-      imagePath: req.body.class
+      imagePath: req.body.imagePath
     }, function (err, book) {
       if (err) {
         res.send('problem adding book to the db');

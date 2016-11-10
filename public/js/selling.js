@@ -121,7 +121,7 @@
                 var bookDiv = listDiv.appendChild(document.createElement('div'));
                 bookDiv.className = "book-div";
                 var img = $('<img id="book-cover">');
-                img.attr('src', 'images/textbookcover.jpg');
+                img.attr('src', thisBook.imagePath);
                 img.appendTo(bookDiv);
 
                 var title = $('<span />').html(thisBook.title);

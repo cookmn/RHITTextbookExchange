@@ -45,6 +45,16 @@ img {
     padding-top: 20px;
 }
 
+#buyerOrSellerProfile {
+    color: blue;
+    text-decoration: underline;
+}
+
+#buyerOrSellerProfile:hover {
+    cursor: hand;
+    cursor: pointer;
+}
+
 #left-col {
     float: left;
     width: 50%;

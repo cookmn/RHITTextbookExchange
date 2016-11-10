@@ -76,8 +76,9 @@ body {
 
 .search-div div div img {
 	float: left;
-	width: 170px;
-	height: 280px;
+	width: 130px;
+	height: 200px;
+	margin: 10%;
 }
 
 

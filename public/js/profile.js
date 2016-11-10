@@ -70,6 +70,7 @@ var buyingdiv = document.getElementById("buying");
 
 //these variables relate to image storage, use as reference for adding it elsewhere in the project
 var imageInput = document.getElementById("imageInput"); //this is the file chooser that appears in the modal
+var bookInputImage = document.getElementById("bookInputImage");
 var imageSRC; //this is set to the result of the file reader upon converting a file to base64 data
 
 $(document).ready(function () {
@@ -77,13 +78,10 @@ $(document).ready(function () {
 	setup();
 });
 
-function handlePicPath() { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
-	var file = document.querySelector('input[type=file]').files[0]; //get the file from the input with type field 
-	console.log("file is: ");
-	console.log(file);
+function handlePicPath(inputElement) { //this method will take the selected file and convert it to base64 and then display the profile pic from the base64 string.
+	var file = inputElement.files[0]; //get the file from the input with type field 
 	var reader = new FileReader();
 	reader.onloadend = function (fileLoadedEvent) {
-        console.log(fileLoadedEvent.target.result); //dumps the base64 data to the console. 
 		imageSRC = fileLoadedEvent.target.result;
     }
 	reader.readAsDataURL(file);
@@ -103,7 +101,8 @@ function setup() {
 	getBooks();
 	getTransactions();
 	setTimeout(function () { populateOrders() }, 800);
-	imageInput.addEventListener("change", handlePicPath); //add handler to image file chooser
+	imageInput.addEventListener("change", function() {handlePicPath(imageInput)}); //add handler to image file chooser
+	bookInputImage.addEventListener("change", function () {handlePicPath(bookInputImage)});
 }
 
 function getAllUsers() {
@@ -114,6 +113,7 @@ function getAllUsers() {
 		success: function (data) {
 			if (data) {
 				allUsers = data;
+				console.log(allUsers);
 			} else {
 				console.log("User info could not get got");
 			}
@@ -297,11 +297,8 @@ function populateOrders() {
 		transactions.forEach(function (transaction) {
 
 			if(sellOrder._id === transaction.orderID && sellOrder.seller === currUser._id) {
-				console.log("Found a transaction attached to this sell order!");
 				sold = true;
 				thisTransaction = transaction;
-				console.log(sellOrder);
-				console.log(transaction);
 				return;
 			}
 			return;
@@ -346,7 +343,7 @@ function populateOrders() {
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
 			var img = $('<img class="sell-image">');
-			img.attr('src', 'images/textbookcover.jpg');
+			img.attr('src', thisBook.imagePath);
 			img.appendTo(imgDiv);
 			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
@@ -365,11 +362,8 @@ function populateOrders() {
 		var thisTransaction; 
 		transactions.forEach(function (transaction) {
 			if(buyOrder._id === transaction.orderID && buyOrder.buyer === currUser._id) {
-				console.log("Found a transaction attached to this buy order!");
 				bought = true;
 				thisTransaction = transaction;
-				console.log(buyOrder);
-				console.log(transaction);
 				return;
 			} 
 			return;
@@ -415,7 +409,7 @@ function populateOrders() {
 
 			var imgDiv = bookDiv.appendChild(document.createElement('div'));
 			var img = $('<img class="sell-image">');
-			img.attr('src', 'images/textbookcover.jpg');
+			img.attr('src', thisBook.imagePath);
 			img.appendTo(imgDiv);
 			img.click(function () {
 				bookClickHandler(thisBook, thisOrder, currUser);
@@ -429,16 +423,9 @@ function populateOrders() {
 }
 
 function confirmOrder(transaction, order, book) {
-	console.log("You confirmed an order! The details are: ");
-	console.log(transaction);
-	console.log(order);
-	console.log(book);
-
 
 	if(order.buyer) {
 		currUser.buyHistory.push(order._id);
-		console.log("Buy history added: now contains " + order._id);
-		console.log(currUser.buyHistory);
 		//buy order
 		$.ajax({
 			url: apiUrl + "buyOrders/" + order._id,
@@ -453,8 +440,6 @@ function confirmOrder(transaction, order, book) {
 		});
 	} else {
 		currUser.sellHistory.push(order._id);
-		console.log("Sell history added: now contains " + order._id);
-		console.log(currUser.sellHistory);
 		//sell order
 		$.ajax({
 			url: apiUrl + "sellOrders/" + order._id,
@@ -476,7 +461,6 @@ function confirmOrder(transaction, order, book) {
 		dataType: 'JSON',
 		success: function (data) {
 			if(data) {
-				console.log("did it");
 				console.log(data);
 			} else {
 				console.log("didn't do it");
@@ -514,8 +498,6 @@ function confirmOrder(transaction, order, book) {
 }
 
 function deleteBookClickHandler(order, book) {
-	console.log("You have entered this function");
-	console.log(order);
 	if (order.buyer) {
 		$.ajax({
 		url: apiUrl + "buyOrders/" + order._id,
@@ -722,7 +704,7 @@ function createSellOrder() {
 		success: function (data) {
 			if (data) {
 				sellOrders.push(data);
-				location.reload();
+				// location.reload();
 			} else {
 				console.log("Book could not be created");
 			}
@@ -814,6 +796,7 @@ function closeModal() {
 	book.authors = authorsInput.value;
 	book.subject = subjectInput.value;
 	book.course = courseInput.value;
+	book.imagePath = imageSRC;
 	createBook();
 }
 
@@ -881,7 +864,5 @@ function editProfile() {
 				}
 			}
 		}
-	} else {
-
 	}
 }
