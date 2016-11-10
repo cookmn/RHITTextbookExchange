@@ -1,5 +1,5 @@
 "use strict";
-var apiUrl = "http://localhost:3000/";
+var apiUrl = "https://rhit-textbookexchange.herokuapp.com/";
 var book;
 var user;
 var order;
