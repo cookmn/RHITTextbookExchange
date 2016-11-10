@@ -704,7 +704,7 @@ function createSellOrder() {
 		success: function (data) {
 			if (data) {
 				sellOrders.push(data);
-				// location.reload();
+				location.reload();
 			} else {
 				console.log("Book could not be created");
 			}
