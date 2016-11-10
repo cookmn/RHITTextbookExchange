@@ -424,6 +424,8 @@ function populateOrders() {
 
 function confirmOrder(transaction, order, book) {
 
+	console.log(currUser);
+
 	if(order.buyer) {
 		currUser.buyHistory.push(order._id);
 		//buy order
@@ -446,13 +448,16 @@ function confirmOrder(transaction, order, book) {
 			type: 'DELETE',
 			dataType: 'JSON',
 			success: function () {
-				window.location = "profile.html";
+				// window.location = "profile.html";
 			},
 			error: function (req, status, err) {
 				console.log(err, status, req);
 			}
 		});
 	}
+
+	console.log(currUser);
+
 
 	$.ajax({
 		url: apiUrl + "users/" + currUser._id,
@@ -488,7 +493,7 @@ function confirmOrder(transaction, order, book) {
 		type: 'DELETE',
 		dataType: 'JSON',
 		success: function () {
-			// window.location = "profile.html";
+			window.location = "profile.html"; 
 		},
 		error: function (req, status, err) {
 			console.log(err, status, req);
@@ -704,7 +709,7 @@ function createSellOrder() {
 		success: function (data) {
 			if (data) {
 				sellOrders.push(data);
-				// location.reload();
+				location.reload();
 			} else {
 				console.log("Book could not be created");
 			}
