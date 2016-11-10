@@ -107,8 +107,8 @@ router.route('/:id')
             user.emailAddress = req.body.emailAddress || user.emailAddress;
             user.year = req.body.year || user.year;
             user.major = req.body.major || user.major;
-            user.buyHistory = req.body.buyHistory || user.buyHistory;
-            user.sellHistory = req.body.sellHistory || user.sellHistory;
+            user.buyHistory = req.body['buyHistory[]'] || user.buyHistory;
+            user.sellHistory = req.body['sellHistory[]'] || user.sellHistory;
 
             user.save(function (err, person) {
                 if (err) {
